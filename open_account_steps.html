@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 
+  最后编辑日期：2026.3.11
+ -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>唠铁开通、设置、分发步骤</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: #f9fafb;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 10px; }
+    header p { opacity: 0.95; font-size: 1rem; }
+    .notice {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 18px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+    section {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    h2 {
+      color: #5a67d8;
+      font-size: 1.4rem;
+      margin: 0 0 18px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eef2f7;
+    }
+    h3 {
+      color: #4a5568;
+      font-size: 1.15rem;
+      margin: 22px 0 12px 0;
+    }
+    ol, ul { padding-left: 24px; margin: 12px 0; }
+    li { margin: 8px 0; }
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 0.9rem;
+      margin: 15px 0;
+      border-left: 4px solid #667eea;
+    }
+    .code-block code { white-space: pre-wrap; word-break: break-all; }
+    .note {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 12px 18px;
+      margin: 15px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: #2c5282;
+      position: relative;
+    }
+    .highlight {
+      background: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .step-list { counter-reset: step; list-style: none; padding-left: 0; }
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 36px;
+      margin: 14px 0;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 0;
+      width: 24px; height: 24px;
+      background: #667eea;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    a { color: #667eea; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #4299e1;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: #3182ce;
+    }
+    .copy-btn.copied {
+      background: #38a169;
+    }
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      header { padding: 25px 20px; }
+      section { padding: 20px; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>唠铁开通步骤</h1>
+    <p>完整开通、设置、安装与分发指南</p>
+  </header>
+
+  <!-- 服务器上开通 -->
+  <section>
+    <h2>【服务器上开通】</h2>
+    <ol class="step-list">
+      <li>在服务器端 litalk目录下，把 user_template 目录复制，并改名为用户名拼音，如wanglaoliu</li>
+      <li>在服务器端 litalk目录下，打开 shown_users.lst，加入：<br>#wanglaoliu       /* 王老六 */</li>
+      <li>通知用户已开通，发给他网址：<br>https://www.holomind.com.cn/litalk/wanglaoliu</li>
+    </ol>
+（此部分由阿色操作）
+  </section>
+
+  <!-- 通知文本 -->
+  <section>
+    <h2>【通知文本】</h2>
+
+    <h3>唠铁推广通知</h3>
+    <div class="note" id="txt1">
+      <button class="copy-btn" onclick="copyText('txt1')">复制</button>
+      各位朋友：<br>
+      本人亲自开发的智能体app【唠铁】上线，可以替你“专业地”聊天，可以上传你自己的知识库，可以以app方式或网址使用。把它发给你的朋友们，朋友们就可以跟它聊天了。唠铁可以分担你的工作，可以把客服工作交给它。<br><br>
+      感兴趣的朋友可以联系阿色免费开通，免费使用，详见：https://www.holomind.com.cn/litalk<br>
+      ◆请先阅读理解上述连接中的约定，联系阿色即表示你已同意上述约定。
+    </div>
+
+    <h3>唠铁已开通，请设置你的智能体</h3>
+    <div class="note" id="txt2">
+      <button class="copy-btn" onclick="copyText('txt2')">复制</button>
+【唠铁已开通，请设置你的智能体】<br><br>
+      已经为你开通唠铁账号，地址为：<br>
+      https://www.holomind.com.cn/litalk/你的名字拼音<br>
+      以阿色给你的为准。<br>
+      可在微信中收藏本网址，以便查找使用。<br>
+      在唠铁首页( https://www.holomind.com.cn/litalk )可找到你的链接。<br><br>
+      请按下列步骤操作：<br>
+      (1)按【设置】键设置你的智能体。<br>
+      设置初始运维码：123456<br>
+      设置后请及时修改运维码，这样能避免别人设定你的唠铁了。<br>
+      按照设置操作即可，可以上传你的知识库，那样就能用你的思想回答问题了。<br><br>
+      (2)在你确定图标和名称后，可按设置中的指导自行编译手机app并上传和分发，也可联系阿色帮你编译，但阿色保留拒绝的权利(除非忙不过来)。<br><br>
+      (3)以后，你只要维护好你的知识库，及时上传更新(支持整体更新，也支持单个文档增量更新)，你的唠铁就会根据你的最新知识库回答问题。你的客户或朋友就能得到你的最新的答案。<br><br>
+      (4)你自己也可以跟你的唠铁聊天，就像周伯通左手搏右手，常常迸发出意想不到的思想火花，与自己的灵魂对话十分有趣，你会发现，你的灵魂伙伴其实是你自己！
+    </div>
+  </section>
+
+  <!-- 在手机上安装和分发唠铁 -->
+  <section>
+    <h3>在手机上安装和分发唠铁</h3>
+    <div class="note" id="txt3">
+      <button class="copy-btn" onclick="copyText('txt3')">复制</button>
+【在手机上安装和分发唠铁】<br><br>
+      ◆【第一步：制作app】<br>
+      进入你的唠铁，点击【设置】，按指导生成并上传你的app到唠铁服务器。<br>
+      如果阿色为你生成了app，他将帮你上传。你可以跳过此步。<br>
+      如果你想自己制作app，可参考【设置】页面【上传App】中的链接，在电脑上操作：<br>
+      * 自行打包的方法（简单，可自行操作，阿色鼓励你试试）：点击查看<br><br>
+      
+      ◆【第二步：获得app安装包】<br>
+      从电脑上传app之后，可进入你的唠铁，点击【分享】，点击二维码，将下载你的app到你自己的手机上；别人扫描二维码则下载到他的手机上。<br>
+      如果你是在微信中下载唠铁，它会提醒你复制链接，然后在浏览器里打开链接。<br>
+      如果是阿色为你生成了app，他会把安装包用微信发给你，你点击安装包，然后，先【保存】，再【收藏】以便你再发给别人。<br><br>
+      
+      ◆【第三步：安装到手机】<br>
+      到你的手机文件管理中，找到安装包，名称为【litalk.你的名字.android.apk】，点击它就开始安装。安装过程中，需要授予权限。因为是我们自行分发，所以手机默认是禁止安装，点击允许、继续安装即可，也可能提示需要特别授权，同意即可。<br><br>
+      
+      ◆【第四步：分发】<br>
+      如果对方使用安卓手机，则可发给他app安装包：打开 【微信-我-收藏】，找到app，【发送给朋友】。<br>
+      如果对方使用苹果手机，则发给他网址(阿色会给你，以阿色给你的为准)，一般如下：https://www.holomind.com.cn/litalk/你的名字拼音<br>
+      你和接收方都可以把网址用微信收藏起来，便于使用和转发。<br><br>
+      
+      ◆【第五步：接收方操作】<br>
+      接收方从【第二步】开始安装即可。<br><br>
+      
+      参考【设置】页面【上传App】中的链接：<br>
+      * 安装和分发唠铁的技巧：点击查看
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 唠铁 LiTalk · 阿色教授 提供技术支持</p>
+  </footer>
+
+  <script>
+    function copyText(id) {
+      const el = document.getElementById(id);
+      const btn = el.querySelector('.copy-btn');
+      const text = el.innerText.replace('复制', '').trim();
+      
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '复制';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

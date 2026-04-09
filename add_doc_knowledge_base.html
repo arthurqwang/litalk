@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<!-- 
+【本文件名】：add_doc_knowledge_base.html
+【版本】：V 0.2
+【最后修改日期】：2026.3.23
+【作者】：王权 大系统观开放论坛
+【功能】：
+    Litalk用户上传自己的知识库文档，前端解析文档文本后追加到服务器knowledge_base.md
+    基础目录： '/www/wwwroot/www.holomind.com.cn/litalk'，这是在服务器端upload_file.js中定义的。
+    可通过 add_doc_knowledge_base.html?dir=userdir 传到基础目录下面的指定用户目录。userdir需要已经存在。
+    使用 utt=3_2 标识"追加知识库文本"任务类型。
+-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>添加LiTalk个人知识库</title> 
+  <!-- 文档解析库CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script>
+    // 配置pdf.js worker路径
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    }
+  </script>
+  <style>
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      line-height: 1.6;
+      background: #000;
+      color: #bbb;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    a {
+      text-decoration: none;
+      color: #666666;
+    }
+
+    a:link, a:visited, a:hover, a:active {
+      color: #666666;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #2020d1;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 0px;
+      font-size: 24px;
+      width: 350px;
+      height: 60px;
+      border-radius: 15px;
+      background-color: #9fe6bc;
+      color: #333;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+      background-color: #e0e0e0;
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background-color: #666;
+      color: #999;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .file-upload-wrapper {
+      display: block;
+      width: fit-content;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .file-upload-btn {
+      width: 350px;
+      height: 80px;
+      background: #f0f0f0;
+      color:#333;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 24px;
+      margin: 0 auto;
+      line-height: 80px;
+      box-sizing: border-box;
+      display: inline-block;
+  }
+  
+    #file-input {
+        display: none;
+    }
+
+    .file-upload-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-name {
+        margin-top: 10px;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        min-height: 24px;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .success {
+        color: #2ecc71;
+        font-size: 14px;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .loading {
+        color: #3498db;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    #doc-text {
+        background: #1a1a1a;
+        color: #eee;
+        border: 1px solid #444;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="begin" class="wrapper" style="border: 0px solid #f00;">
+  <div  style="border: 0px solid rgb(15, 175, 15);">
+    <br><br><br>
+    <img src="img/litalk_logo.png" style="width: 40%;">
+    <br>
+    <span style="margin: 0; font-size: 1.5rem; font-weight:800; color: #3497da;">添加文档到个人知识库</span>
+    <br>
+    请选择要添加的文档<br>
+    您可以把各种文档追加到已有知识库中，知识库将自动更新。<br>支持Word(.docx)、PPT(.pptx)、Excel(.xlsx)、PDF、txt、md、html。<br>老版本MS Office文档请先转成新格式。
+
+    <br><br>
+    <label class="file-upload-btn" for="file-input">选择文档文件</label>
+    
+    <!-- 下面的 accept不能写，否则 HBuilderX 编译成app后无法选择文件 -->
+    <input 
+      type="file" 
+      id="file-input" 
+      class="file-upload-input" 
+    >
+
+    <div id="file-name" class="file-name">未选择文件</div>
+
+    从文档解析出的文本将在下列文本框中显示。<br>您可以在添加到知识库之前进行检查修改此文本。<br>
+    您也可以直接手动输入或粘贴文本内容，作为知识添加到知识库。<br>
+    <textarea id="doc-text" style="display:block;height:12rem;width:90%; resize:both;overflow:auto; margin: 0 auto;" placeholder="这里是即将添加的文本。&#10;文档解析后的文本将在这里显示。&#10;拖拽右下角可改变尺寸。"></textarea>
+    
+    <span id="upload-hint" style="display:none; color: lightgreen; animation: blink 1s infinite;"> </span>
+    <style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }</style>
+
+    <div id="error-message" class="error"></div>
+    <div id="success-message" class="success"></div>
+    <div id="loading-message" class="loading"></div>
+    
+    <br>
+    <button id="btn_add_kb" type="button">添加</button>
+    <br>
+    <button type="button" onclick="window.history.back();">返回</button>
+
+    <br><br>
+    <h2>【注意】</h2>
+    <p>上传后，你的文件将可以被任何人下载，请自行把握信息保密。</p>
+    <p>请确保上传的文件不涉及敏感信息。</p>
+    <p>如有问题，责任自负，本网站不承担任何责任。</p>
+    <p>上传文件即表示你同意公开你的文件，并同意上述约定。</p>
+    <br>
+    <h3>大系统观及网站宗旨</h3>
+    <p>免费开源 自由使用 自由复制 自由分享</p>
+  </div>
+</div>
+
+<div class="wrapper">
+  <p><a href="#begin">返回顶部</a></p>
+</div>
+
+<script>
+  // 解析URL参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const dir = urlParams.get('dir') || 'nodir';
+  const utt = '3_2';  // 任务类型：追加知识库文本
+
+  // 允许的文件扩展名
+  const allowedExtensions = ['docx', 'pptx', 'xlsx', 'pdf', 'md', 'txt', 'html', 'htm'];
+  const maxFileSize = 500 * 1024 * 1024; // 500MB
+
+  const fileInput = document.getElementById('file-input');
+  const fileNameDisplay = document.getElementById('file-name');
+  const docText = document.getElementById('doc-text');
+  const errorMessage = document.getElementById('error-message');
+  const successMessage = document.getElementById('success-message');
+  const loadingMessage = document.getElementById('loading-message');
+  const btnAddKb = document.getElementById('btn_add_kb');
+  const uploadHint = document.getElementById('upload-hint');
+
+  // 读取文本文件，去掉html标签
+  function readTextFile(file) {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      // 读取成功的回调
+      reader.onload = (e) => {
+        try {
+          // 获取原始文本内容
+          const rawContent = e.target.result;
+          // 去掉html 标签
+          const filteredContent = stripAllTagsAndDecodeInHTML(rawContent);
+          // 返回过滤后的内容
+          resolve(filteredContent);
+        } catch (error) {
+          // 捕获 cutStr 执行过程中可能出现的错误
+          reject(new Error(`过滤文本时出错: ${error.message}`));
+        }
+      };
+      // 读取文件的错误回调
+      reader.onerror = (error) => {
+        reject(new Error(`读取文件失败: ${error.message}`));
+      };
+      // 以文本形式读取文件
+      reader.readAsText(file);
+    });
+  }
+
+  // 解析docx文件
+  async function parseDocx(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+    return result.value;
+  }
+
+  // 解析pptx文件（简化：仅提取幻灯片文本）
+  async function parsePptx(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    let text = '';
+    // 遍历ppt/slides目录下的xml文件
+    const slideFiles = Object.keys(zip.files).filter(f => f.startsWith('ppt/slides/slide') && f.endsWith('.xml'));
+    for (const slideFile of slideFiles) {
+      const content = await zip.file(slideFile).async('text');
+      // 简单提取<t>标签内的文本
+      const matches = content.match(/<a:t[^>]*>([^<]*)<\/a:t>/g);
+      if (matches) {
+        text += matches.map(m => m.replace(/<[^>]+>/g, '')).join(' ') + '\n';
+      }
+    }
+    return text || '[PPTX解析：未提取到文本，建议手动复制内容]';
+  }
+
+  // 解析xlsx文件
+  function parseXlsx(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          let text = '';
+          workbook.SheetNames.forEach(sheetName => {
+            const sheet = workbook.Sheets[sheetName];
+            // text += `【${sheetName}】\n` + XLSX.utils.sheet_to_txt(sheet) + '\n\n';
+            text += `【${sheetName}】\n` + XLSX.utils.sheet_to_csv(sheet) + '\n\n';
+          });
+          resolve(text);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  // 解析PDF文件
+  async function parsePdf(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(item => item.str).join(' ');
+      text += `[第${i}页] ${pageText}\n`;
+    }
+    return text;
+  }
+
+  // 解析文件主函数
+  async function parseFile(file) {
+    const ext = file.name.split('.').pop().toLowerCase();
+    
+    switch(ext) {
+      case 'txt':
+      case 'md':
+      case 'html':
+      case 'htm':
+        return await stripAllTagsAndDecodeInHTML(readTextFile(file));
+      case 'docx':
+        return await parseDocx(file);
+      case 'pptx':
+        // 注意：需要JSZip库，这里简化处理，提示用户
+        if (typeof JSZip === 'undefined') {
+          return '[PPTX解析：请手动复制文本内容，或先转换为PDF/TXT格式]';
+        }
+        return await parsePptx(file);
+      case 'xlsx':
+        return await parseXlsx(file);
+      case 'pdf':
+        return await parsePdf(file);
+      default:
+        throw new Error(`不支持的文件类型：.${ext}`);
+    }
+  }
+
+  // 文件选择事件
+  fileInput.addEventListener('change', async function(e) {
+    errorMessage.textContent = '';
+    successMessage.textContent = '';
+    loadingMessage.textContent = '';
+
+    if (fileInput.files.length === 0) {
+      fileNameDisplay.textContent = "未选择文件";
+      return;
+    }
+
+    const file = fileInput.files[0];
+    const fileName = file.name;
+    const fileExt = fileName.split('.').pop().toLowerCase();
+    const fileSize = file.size;
+
+    // 验证文件
+    if (!allowedExtensions.includes(fileExt)) {
+      errorMessage.textContent = `错误：文件类型不允许（仅允许 .docx、.pptx、.xlsx、.pdf、.md、.txt、.html、.htm）`;
+      fileInput.value = "";
+      fileNameDisplay.textContent = "未选择文件";
+      return;
+    }
+
+    if (fileSize > maxFileSize) {
+      const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+      errorMessage.textContent = `错误：文件过大（${sizeInMB}MB，限 500MB）`;
+      fileInput.value = "";
+      fileNameDisplay.textContent = "未选择文件";
+      return;
+    }
+
+    // 显示文件名，开始解析
+    fileNameDisplay.textContent = `正在解析: "${fileName}" ...`;
+    loadingMessage.textContent = "文档解析中，请稍候...";
+    btnAddKb.disabled = true;
+
+    try {
+      const extractedText = await parseFile(file);
+      docText.value = extractedText;
+      successMessage.textContent = `解析成功！共 ${extractedText.length} 字符`;
+      fileNameDisplay.textContent = `已选择: "${fileName}"`;
+      uploadHint.style.display = 'block';
+    } catch (err) {
+      console.error('解析失败:', err);
+      errorMessage.textContent = `解析失败: ${err.message}（建议手动复制文本到下方输入框）`;
+      fileNameDisplay.textContent = `解析失败: "${fileName}"`;
+    } finally {
+      loadingMessage.textContent = '';
+      btnAddKb.disabled = false;
+    }
+  });
+
+  // 添加按钮点击事件：发送文本到服务器
+  btnAddKb.addEventListener('click', async function() {
+    const textContent = docText.value.trim();
+    if (!textContent) {
+      errorMessage.textContent = '请输入要添加的文本内容';
+      return;
+    }
+
+    errorMessage.textContent = '';
+    successMessage.textContent = '';
+    uploadHint.style.display = 'block';
+    uploadHint.innerHTML = '正在追加到知识库，请稍候...';
+    btnAddKb.disabled = true;
+
+    try {
+      // 发送JSON数据到后端 /upload 接口
+      const response = await fetch(`/upload?dir=${encodeURIComponent(dir)}&utt=${encodeURIComponent(utt)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'append_text',
+          text: textContent,
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        successMessage.textContent = '成功追加到知识库！可继续追加。';
+        uploadHint.innerHTML = '添加成功！可继续添加。';
+        document.querySelector('label[for="file-input"]').textContent = '继续选择文档文件';
+        // 可选：清空textarea
+        docText.value = '';
+      } else {
+        throw new Error(result.message || '服务器返回错误');
+      }
+    } catch (err) {
+      console.error('上传失败:', err);
+      errorMessage.textContent = `添加失败: ${err.message}`;
+      uploadHint.innerHTML = '添加失败，请重试';
+    } finally {
+      setTimeout(() => {
+        uploadHint.style.display = 'none';
+        btnAddKb.disabled = false;
+      }, 3000);
+    }
+  });
+
+
+  // ******************************************* stripAllTagsAndDecodeInHtml *********************************************
+  // 去除网页HTML中的各种标签、代码等，形成纯文本。返回纯文本字符串。使用前请确保已获得网页的HTML文本内容。
+  function stripAllTagsAndDecodeInHTML(text) {
+    if (typeof text !== 'string') {
+      return text;
+    }
+    // 清除 <script> 标签及其内容
+    text = text.replace(/<script[\s\S]*?<\/script>/gi, '');
+    text = text.replace(/<script\b[^<]*>.*?<\/script>/gis, '');
+    // 移除所有 HTML 元素上的内联事件属性（如 onclick, onload 等）
+    text = text.replace(/<([a-z][a-z0-9]*)\b[^>]*\s+(on[a-z0-9]+)\s*=\s*("[^"]*"|'[^']*'|[^>\s]+)/gi, '<$1');
+    // 清除 <style> 标签及其内容
+    text = text.replace(/<style[\s\S]*?<\/style>/gi, '');
+    // 清除 HTML 注释
+    text = text.replace(/<!--[\s\S]*?-->/g, '');
+    // 清除 PHP 指令、DOCTYPE 等其他标记
+    text = text.replace(/<\?[\s\S]*?\?>/g, '');
+    text = text.replace(/<![^>]*>/g, '');
+    // 清除所有 HTML 标签
+    text = text.replace(/<[^>]+>/g, '');
+    // 处理 HTML 实体（如 &nbsp;、<）
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    text = tempDiv.textContent || tempDiv.innerText || '';
+    // 清除空白行（匹配连续换行符+空白+换行符）
+    text = text.replace(/(\r?\n|\r)\s*(\r?\n|\r)/g, '\n');
+    // 清除连续5个以上的空格（保留单个空格）
+    text = text.replace(/ {5,}/g, ' ');
+    return text;
+  }
+
+  // 页面加载完成后，设置文件输入事件监听器，更新按钮文本
+  document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.getElementById('file-input');
+    var fileLabel = document.querySelector('label[for="file-input"]');
+
+    if (fileInput && fileLabel) {
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+              fileLabel.textContent = '重新选择文档文件';
+
+            }
+        });
+    }
+});
+
+// 当点击文件选择按钮时，清除之前的成功消息和提示
+document.querySelector('label[for="file-input"]').addEventListener('click', function() {
+  successMessage.textContent = '';
+  uploadHint.innerHTML = '';
+});
+
+
+</script>
+
+<!-- 补充：PPTX解析需要的JSZip库（按需加载） -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+</body>
+</html>

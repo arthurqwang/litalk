@@ -1,0 +1,557 @@
+<html>
+    <!-- chat_robot.html -->
+    <!-- 
+    唠铁 LiTalk 页面文件
+    最后修改日期：2026.4.2
+    
+    手机 app 使用 HBuilder X 4.87 建立，这个 app 直接调用 本html(chat_robot.html)，所以直接修改本html文件即可，app 只是一个手机端调用的壳。 
+    ******【注意】******
+    使用 HBuilder X 编译手机 app时，页面地址应该使用：https://www.holomind.com.cn/litalk/chat_robot.html?uf=test_user ,
+    不要使用 https://www.holomind.com.cn/litalk/test_user ，否则，经过 test_user/index.html 跳转会被劫持到恶意网站。
+    本程序由【小B博士】的DrB.html（2026.1.27版）改造而来 
+    -->
+
+    <!-- 为了让大家看到如何控制LLM和构造上下文并便于调试，代码尽量写在了本文件中。 -->
+    <!--
+        笔记：
+        在 chat_robot_call_llm.js 中。
+     -->
+
+<head>
+
+<script>
+    // 版本信息，显示在帮助界面
+    const VERSION_NO = "V 1.9.19.2"; // 版本号
+    const RELEASE_DATE = "2026.4.2"; // 更新日期
+
+    // ************************************************************ 模仿$ ****************************************************************
+    // 不放其他 js文件中，否则本文件会引用不到
+    // 将 $ 用$代替
+    // 置于最前，后面各处才能调用
+    function $(Nid) {
+        return document.getElementById(Nid);
+    }
+</script>    
+
+<!-- 基本功能函数 -->
+<script src="basic_functions.js"></script>
+
+<!-- <script src="chat_robot_call_llm.js" defer></script> -->
+<!-- 处理聊天机器人的代码都在 chat_robot_call_llm.js -->
+<script>
+    const script = document.createElement('script');
+    script.src = 'chat_robot_call_llm.js?ts=' + Date.now();
+    script.defer = true;
+    document.head.appendChild(script);
+</script>
+
+<!-- 引入二维码动态生成QRCode.js库（使用CDN地址，无需本地下载） -->
+<script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+
+<meta charset="UTF-8"> 
+<meta name="keywords" content="本网站是大系统观的官方网站,最具权威性,大系统观,BSV,Big Systems View,王权,阿色树新风,全息脑图,ahmm,Arthur's Holographic Mind Map,阿色全息脑图,bjbq20120919xj,系统,系统论,系统科学,系统工程,系统思维,系统观,大信息观,全息,系统结构,哲学,思维科学,数字油田,智能油田,智慧油田,数智油田,智能数字油田开放论坛,iDOF,全息有机系统论,系统结构动力学,融合经典系统理论和前沿科技思想，创建与时俱进的大系统新哲学">
+<meta name="robots" content="index, follow">
+<title>大系统观 (Big Systems View)</title>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+<style>
+    /* 总体设置 */
+    body{
+        background: #000;
+        padding: 0;
+        margin: 0; 
+    }
+
+    .header{
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        position: relative;
+    }
+
+    a:link {
+        color:rgb(174, 214, 247);
+        text-decoration:none;
+    }
+    a:visited {
+        color:rgb(174, 214, 247);
+        text-decoration:none;
+    }
+    a:hover {
+        color:rgb(92, 212, 241);
+        text-decoration:none;
+    }
+    a:active {
+        color:rgb(230, 202, 143);
+        text-decoration:none;
+    }
+
+    /* 设置图片呼吸动画 */
+    .breathing-image {
+        animation: pulse 1s infinite;  /* 调用动画 */
+        animation-delay: 10s;  /* 先等待5秒 */
+        animation-duration: 15s; /* 整个动画的时长 */
+        }
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);  /* 开始和结束的缩放值 */
+                filter: brightness(100%);  /* 开始和结束的亮度 */
+            }
+            50% {
+                transform: scale(0.97);  /* 中间的缩放值 */
+                filter: brightness(0%);  /* 中间的亮度 */
+            }
+        }
+
+
+    /* 设置button - 增强立体感+边框版本 */
+    .tutorial-button {
+        margin: 4px;
+        opacity: 1; 
+        border-radius: 20px;
+        /* 背景渐变 - 顶部亮色底部暗色模拟光线 */
+        /* background: linear-gradient(180deg, #ffffff 0%, #999999 100%); */
+        cursor: pointer;
+        /* 增强阴影效果 */
+        box-shadow: 
+            0 3px 10px rgba(0, 0, 0, 0.1),  /* 外阴影 - 立体感 */
+            inset 0 1px 0 rgba(255, 255, 255, 0.8),  /* 内高光 */
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);  /* 内阴影 */
+        transition: all 0.2s ease;
+        position: relative;
+        /* 强化边框 - 使用双边框效果 */
+        border: 6px solid #056852;
+        /* 边框高光 - 顶部和左侧添加浅色边框模拟光线 */
+        border-top: 6px solid #25ecf3;
+        border-left: 6px solid #2cf0f0;
+    }
+
+    /* 设置文字闪烁动画 */
+    #shiningWords {
+        position: absolute;
+        top: 0;
+        opacity: 0;
+        text-align: left;
+        font-size: 30px;
+        background-color: none;
+        z-index: 1010;
+        transition: opacity 2s ease-in-out;
+        /* 添加文字黑边效果 */
+        text-shadow: 
+            2px 0 0 #000, 
+            -2px 0 0 #000,
+            0 2px 0 #000,
+            0 -2px 0 #000,
+            2px 2px 0 #000,   /* 右下角 */
+            -2px -2px 0 #000, /* 左上角 */
+            2px -2px 0 #000,  /* 右上角 */
+            -2px 2px 0 #000;  /* 左下角 */
+    }
+
+    /* 设置闪烁文字前面的单个星星的闪烁，用一个div的背景色实现 */
+    #singleStar {
+        position: absolute; 
+        display:none;
+        width: 15px;
+        height: 15px;
+        transform: rotate(45deg);
+        filter: blur(3px);
+        animation: flash 0.2s infinite alternate;
+        z-index:1009;
+    }
+    @keyframes flash {
+        0% {
+            opacity: 0.2;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* 机器人对话使用 <hr> */
+    .hr-robot {
+        margin-left: auto; 
+        margin-right: auto; 
+        width: 80%;
+        height: 1px; 
+        background-color: rgb(60, 60, 60); 
+        border: none;
+    }
+
+    /* 立体边框样式 */
+    .video-container {
+        /* display: inline-block; */
+        /* margin: 50px; */
+        padding: 5px; /* 边框宽度 */
+        border-radius: 5px;
+        background: #000; /* 边框颜色 */
+        box-shadow: 
+            2px 2px 4px rgba(9, 70, 88, 0.5), /* 右下阴影增强立体感 */
+            -1px -1px 2px rgba(255, 255, 255, 0.2); /* 左上微光增强立体感 */
+    }
+
+    video {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* 渐进显示整个页面 */
+    .fade-in {
+        animation: fadeIn 10s forwards; 
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }  
+    }
+
+    /* 按键：复制、新建对话、存知识库、返回 */
+    .btn-div {
+        height: 100%; 
+        justify-content: flex-end; 
+        align-items: flex-end; 
+        border: 0px solid #c95918; 
+        display: none; 
+        font-size: 20px; 
+        /* cursor: pointer;  */
+        color: #0cf;
+    }
+
+    /* 复制机器人对话时，冒泡Toast通知样式 */
+    #toast {
+        visibility: hidden;
+        min-width: 250px;
+        height: auto; /* 默认值，可省略不写 */
+        overflow: visible;
+        background-color: #333;
+        color: #0cf;
+        text-align: center;
+        border-radius: 4px;
+        padding: 16px;
+        position: fixed;
+        z-index: 99999;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 50%;
+        font-size: 40px;
+        opacity: 0;
+        transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    /* 显示状态通用样式 */
+    #toast.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    #qrcode {
+        margin-top: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        width: 100%;
+        aspect-ratio: 1/1; /* 宽高比1:1，替代固定height */
+        border: 1px solid #eee;
+    }
+    /* 让二维码图片充满容器且保持比例 */
+    #qrcode img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* 保持二维码比例，不拉伸变形 */
+        margin: auto; /* 兜底确保居中 */
+    }
+
+    /* 头像圆圈 */
+    .card-logo {
+        width: 20%;
+        aspect-ratio: 1 / 1;            
+        margin-bottom: 10px;
+        border-radius: 50%; /* This creates the circular shape */
+        object-fit: cover; /* Ensures the image fills the circle properly */
+        border: 3px solid #555;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    /* 本地聊天记录中时间戳 所有属性将要重设*/
+    .chat-timestamp {
+        font-size: 30px;
+        color: #087b9e;
+    }
+
+</style>
+
+</head> 
+
+<body>
+<div  class="fade-in">
+
+    <!-- ********************************************************************** 网站顶部封面全屏 *******************************************************************************-->
+    <!---**********************************************************************************************************************************************************************-->
+
+    <div id="DIV_BSV_LOGO_AND_ROBOT"  style="text-align: center; display: block; position: absolute; color:rgb(36, 116, 168); background-color:#000; border: 0px solid #FF0000; font-size:20px; z-index:1000;">
+
+        <!-- 顶部空白 占高10%, 聊天开始后5% -->
+        <div id="DIV_TOP_BLANK" style="height: 10%; background-color: transparent; border: 0px solid #FF0000;"></div>
+        
+        <!-- 封面图片 占高25%, 聊天开始后隐藏 -->
+        <div id="DIV_LOGO_IMG" style="height: 25%; background-color: transparent; border: 0px solid #0a8338;">
+            <img id="FACE_PIC_NAME" alt="封面图片" style="height: 100%; max-width: 80%; transition: transform 0.3s ease;" >
+        </div>
+        
+        <!-- 占位 占高10%, 聊天开始后隐藏 -->
+        <div id="Dr_B_Greeting" class="breathing-image" style="height: 10%; margin-left: 100px; background-color: transparent; border: 0px solid #55642c;">  
+        </div>
+        
+        <!-- 扫码分享唠铁 -->
+        <div id="DIV_SHARE_DRB_TEXT" style="height: 6%; display:none; font-size: 40px; line-height: 1.2; background-color: transparent; border: 0px solid #55642c;">  
+            分享【用户名】App<br>请点击或扫描二维码
+        </div>
+        
+        <!-- 唠铁logo 占高20%, 聊天开始后调为10% -->
+        <div id="Dr_B_Div" style="height: 20%; background-color: transparent; border: 0px solid #6b2238;">  
+            <img id="USER_LOGO_PIC_NAME" alt="用户logo图片" class="card-logo" style="transition: transform 0.3s ease;" >
+            <br>
+            <span id="ROBOT_NAME" style="display:block; color: #0cf;">唠铁</span>
+        </div>
+
+        <!-- 唠铁 app 分享二维码 -->
+        <div id="DIV_SHARE_DRB_QRCODE" style="height: 20%; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: transparent; border: 0px solid #6b2238;">
+            <a id="qrcode_link" href="https://www.holomind.com.cn/litalk" target="_blank">
+               <div id="qrcode" style="font-size: 24px; background-color: transparent; border: 2px solid #087b9e; border-radius: 5px;"></div>
+            </a>
+        </div>
+        
+        <!-- 官网下载APP -->
+        <div id="DIV_SHARE_DRB_URL" style="display:none; text-align: center;" >或到官网下载
+            <div style="text-align: center; padding: 0 40px; word-wrap: break-word;" >
+                <a id="app_url_link" target="_blank"><span id="app_url_text"></span></a>
+            </div>
+        </div>
+
+        <!-- 复制、清除、关闭按钮 占高5%, 开始不显示，聊天开始后显示操作符号 -->
+        <div id="DIV_MID_BLANK" style="height: 4%; margin-bottom: 5px; background-color: transparent; border: 0px solid #a7e712; display: flex; justify-content: flex-end; align-items: flex-end; z-index: 20000;">
+            <div id="history-button" class="btn-div"><img src="img/chat_history.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="查看聊天记录" onclick="restoreHistory();">&nbsp;</div>
+            <div id="copy-button" class="btn-div"><img src="img/copy.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="复制对话文本" onclick="copyTalk();">&nbsp;</div>
+            <div id="clear-button" class="btn-div"><img src="img/new_talk.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="新开对话/话题" onclick="clearTalk();">&nbsp;</div>
+            <div id="add-kd-button" class="btn-div"><img src="img/add_kd.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="抽取对话知识，并添加到知识库" onclick="addToKnowledgeBase();">&nbsp;</div>
+            <div id="return-button" class="btn-div"><img src="img/return.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="返回首页" onclick="showDrBHomepage();">&nbsp;</div>
+            <div id="help-button" class="btn-div"><img src="img/help.png?${new Date().getTime()}" style="height: 70%; cursor: pointer;" title="帮助信息" onclick="showHelp();">&nbsp;&nbsp;</div>
+        </div>
+
+        <!-- 按键、网站链接  占高25%, 底端剩余5%, 聊天开始后隐藏 -->
+        <div id="DIV_CHAT_BUTTON" style="height: 25%; background-color: transparent; border: 0px solid #af376f;">
+            <button id="begin-chat-button" class="tutorial-button" onclick="hideDrBHomepage(); callQuestion();" style="width: 60%; height: 22%;">开始聊天</button>
+            <div style="height: 5%;"></div> 
+            <button id="share-drb-button" class="tutorial-button" onclick="showShareDrB();" style="width: 28%; height: 18%;">分享</button>
+            <button id="open-edit-button" class="tutorial-button" onclick="openEditPage();" style="width: 28%; height: 18%;">设置</button>
+            <div style="height: 15%;"></div>   
+            <span id="bsv-web-name" style="font-size: 50px;">【大系统观官网】</span><br>
+            <a href="https://www.holomind.com.cn" target="_blank"><span id="bsv-web-url" style="font-size: 32px;">www.holomind.com.cn</span></a>
+            <div style="height: 15px;"></div>
+            <!-- 访问计数器，与网站是同一个 -->
+            <div id="total-chat-times" style="font-size: 50%;">含铁量：12345</div>
+
+
+        </div>
+
+        <!-- 底边留白 占高5% -->
+
+        <!-- 上面是第一屏，下面是第二屏 -->
+
+        <!-- 机器人回答内容 此上logo高度占 20% ，此 占高65%-->
+        <!-- 这个 div 就是那个暗蓝色方框 -->
+        <div id="answer-div" style="width: 90%; height: 65%; padding-top: 10px; padding-bottom: 10px; padding-right: 2px; padding-left: 10px; 
+            display: none; justify-content: center; gap: 8px; margin: 0 auto; 
+            color: #aaa; background-color: rgba(0, 0, 0, 0.7); border: 2px solid  rgba(0, 170, 255, 0.4); z-index: 11000; text-align: center;">
+
+            <!-- 回答内容 程序自动填写聊天过程文本 -->
+            <div id="talk-with-chatbot" style="display: block; width: 100%; height: 100%; overflow-y: auto; text-align: justify; line-height: 1.5; font-size: 45px; margin-top: 0px; border: 0px solid rgba(200, 0, 0, 1); padding-right: 10px; box-sizing: border-box;">
+            </div>
+
+            <!-- Toast通知: 复制、新建清除、添加知识库使用 -->
+            <div id="toast"></div>
+        </div>
+
+        <!-- 问题输入框 此上高度占 85% ，此 占高14%，底部留1%-->
+        <div id="robot-input" style="
+            width: 93%; 
+            height: 14%;  
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 2px; margin: 0 auto; 
+            z-index: 11001; 
+            text-align: center;  
+            background-color: transparent; 
+            border: 0px solid #17d327;
+        ">
+            <textarea id="one-sentence-input-from-hmpg" class="tutorial-button" style="width: 80%; height:90%; padding-left: 10px; background-color: #ffffff; overflow: hidden; font-size: 50px;"></textarea>
+            <button id="question-btn-from-hmpg" 
+                    class="tutorial-button" 
+                    style="width: 20%; height:90%; font-size: 50px; background-color: #fff;" 
+                    onclick="this.style.backgroundColor='#aaf0f0'; setTimeout(() => { this.style.backgroundColor='#fff'; addKnowledgeDuringChat(); callQuestion(); }, 200);">
+            发送
+            </button>
+        </div>
+
+        <!-- 帮助 -->
+        <!-- 顶端 X  -->
+        <div id="close-guide-div" style="
+            display: none;
+            position: fixed; 
+            z-index: 12010; 
+            top: 17.75%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding-right: 10px; 
+            padding-left: 0px;  
+            background-color: rgb(6, 34, 37); 
+            border: 0px solid  rgba(174, 185, 14, 1);
+            text-align: right; 
+            font-size: 100%;">
+            <div style="cursor: pointer;
+                width: 100%;   
+                background-color: rgb(6, 34, 37); 
+                border: 0px solid  rgba(20, 59, 78, 0.4);
+                " 
+                onmouseover="this.style.color='#0cf'" 
+                onmouseout="this.style.color=''" 
+                onclick="hideHelp()"
+                >×</div>
+        </div>
+        <!-- 帮助主内容 -->
+        <div  id="help-div" style="
+            display: none; 
+            position: fixed; 
+            z-index: 12020; 
+            top: 59.5%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);  
+            padding-top: 0px; 
+            padding-bottom: 0px; 
+            padding-right: 20px; 
+            padding-left: 20px; 
+            justify-content: center; 
+            gap: 8px; 
+            margin: 0 auto; 
+            color: #aaa; 
+            background-color: rgba(7, 50, 56, 1); 
+            border: 0px solid  rgba(20, 59, 78, 0.4); 
+            text-align: left; 
+            font-size: 100%;
+            overflow-y: auto;
+            ">
+            <br><br>
+            <div style="width:100%; justify-content: center; text-align: center; border: 0px solid  rgb(33, 212, 27); font-size: 75%; font-weight: 600;">【用户身份状态】</div>
+            <div id="owner-status-div1" style="display: block; width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; 
+                border: 0px solid  rgba(216, 14, 189, 1); 
+                text-align: justify;
+                text-align-last: left;
+                text-justify: inter-ideograph;
+                font-size: 60%;">
+                <br>
+                系统区分两种身份：【主人】或【来访用户】。<br>
+                每次进入时，自动使用上次身份。您可以在此手动切换。<br>
+                主人身份具有设置智能体和添加知识等权限，需要输入运维码认证。<br><br>
+                <span style="font-size: 110%; font-weight: 600;">【当前状态】</span>：您当前身份是【<span id="user-status" style="color:#0a8338;font-weight: 600;" >主人</span>】<br>
+            </div>
+            <div id="owner-status-div2" style="display: none; width:100%; justify-content: center; text-align: center;">
+                <br>
+                <button id="enter-visitor-button" class="tutorial-button" onclick="enterVisitor();" style="width: 80%; height: 6%; font-size: 60%;">切换到【来访用户】身份</button>
+            </div>
+            <div id="visitor-status-div1" style="display: block; width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; 
+                border: 0px solid  rgba(216, 14, 189, 1); 
+                text-align: justify;
+                text-align-last: left;
+                text-justify: inter-ideograph;
+                font-size: 60%;">
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;请输入运维码：<input type="text" id="p-code-input-text" style="width: 30%; font-size: 80%;">
+                <br>
+                <span id="p-code-err" style="display:none; color: red; font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运维码输入错误，请重新输入。</span>
+            </div>       
+            <div id="visitor-status-div2" style="display: block; width:100%; justify-content: center; text-align: center;">
+                <br>
+                <button id="enter-owner-button" class="tutorial-button" onclick="enterOwner();" style="width: 80%; height: 6%; font-size: 60%;">切换到【主人】身份</button>
+            </div>        
+            <hr class="hr-robot" style="background-color:#274964">
+            <br>     
+            <div style="width:100%; justify-content: center; text-align: center; border: 0px solid  rgb(33, 212, 27); font-size: 75%; font-weight: 600;">【操作向导】</div>
+            <div style="width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; border: 0px solid  rgba(216, 14, 189, 1); text-align: left; font-size: 60%;">
+                <br>
+                <img src="img/chat_history.png?${new Date().getTime()}" style="height: 3%;">：查看聊天记录<br>
+                <img src="img/copy.png?${new Date().getTime()}" style="height: 3%;">：复制当前对话文本到剪切板<br>
+                <img src="img/new_talk.png?${new Date().getTime()}" style="height: 3%;">：新开对话/话题，清除当前对话文本<br>
+                <img src="img/add_kd.png?${new Date().getTime()}" style="height: 3%;">：抽取对话知识，添入知识库(限主人使用)<br>
+                <img src="img/return.png?${new Date().getTime()}" style="height: 3%;">：返回首页<br>
+                <img src="img/help.png?${new Date().getTime()}" style="height: 3%;"> ：帮助，显示本窗口操作向导
+            </div>
+            <hr class="hr-robot" style="background-color:#274964">
+            <br>
+            <div style="width:100%; justify-content: center; text-align: center; border: 0px solid  rgb(33, 212, 27); font-size: 75%; font-weight: 600;">【操作技巧】</div>
+            <div style="width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; 
+                border: 0px solid  rgba(216, 14, 189, 1); 
+                text-align: justify;
+                text-align-last: left;
+                text-justify: inter-ideograph;
+                font-size: 60%;">
+                <br>
+                <span style="font-size: 110%; font-weight: 600;">【记录指令】</span>：可在聊天过程中使用【记录】命令智能体记录知识，并添加到知识库。<br><br>
+                <span style="font-size: 110%; font-weight: 600;">【指定关键词】</span>：可在聊天过程中使用【*】符号指定关键词，智能体会优先使用与关键词相关的知识进行回答。例如，您说：<br>
+                &nbsp;&nbsp;&nbsp;<span style="color:#0a8338;font-weight: 600;" >记录，*西南石油大学 简称为西油。</span><br><br>
+                智能体会记住这句话，并把“西南石油大学”设为关键词，后续对话会优先使用与其相关的知识。<br><br>
+                ☆ 注意：①此功能仅限主人使用。②关键词后面应该跟一个空格或标点符号，以便智能体正确识别。<br>
+            </div>
+            <hr class="hr-robot" style="background-color:#274964">
+            <br>
+            <div style="width:100%; justify-content: center; text-align: center; border: 0px solid  rgb(33, 212, 27); font-size: 75%; font-weight: 600;">【聊天记录】</div>
+            <div style="width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; 
+                border: 0px solid  rgba(216, 14, 189, 1); 
+                text-align: justify;
+                text-align-last: left;
+                text-justify: inter-ideograph;
+                font-size: 60%;">
+                <br>
+                聊天记录存储于本设备的缓存当中，并不在服务器端存储。如果需要长期保存，请使用上述【复制】功能粘贴到您的文件中编辑保存。<br>
+                如果您想删除本设备上的聊天记录，请按下面的按钮。<br><br>
+                <span style="color:#f00;font-weight: 600;" >☆ 注意：删除后不可恢复，请慎重操作！</span>
+            </div>          
+            <div style="width:100%; justify-content: center; text-align: center;">
+                <br>
+                <button id="del-history-button" class="tutorial-button" onclick="delLocalChatHistory();" style="width: 80%; height: 6%; font-size: 60%;">删除本地聊天记录</button>
+            </div>        
+            <hr class="hr-robot" style="background-color:#274964">
+            <br> 
+            <div style="width:100%; justify-content: center; text-align: center; border: 0px solid  rgb(33, 212, 27); font-size: 75%; font-weight: 600;">【版本信息】</div>
+            <div style="width:100%; justify-content: left; padding-top:0px; padding-bottom: 0px; padding-right: 0px; 
+                border: 0px solid  rgba(216, 14, 189, 1); 
+                text-align: justify;
+                text-align-last: left;
+                text-justify: inter-ideograph;
+                font-size: 60%;">
+                <br>
+                <span style="font-size: 110%; font-weight: 600;">【当前版本号】</span>：<span id="versionText">V 12.9.19</span><br>
+                <span style="font-size: 110%; font-weight: 600;">【更新日期】</span>：<span id="releaseDateText">2026.3.31</span><br>
+                <script>
+                    // 将版本信息显示在页面上
+                    $("versionText").textContent = VERSION_NO;
+                    $("releaseDateText").textContent = RELEASE_DATE;
+                </script>
+            </div>              
+            <div style="width:100%; justify-content: center; text-align: center;">
+                <br>
+                <button id="close-guide-button" class="tutorial-button" onclick="hideHelp();" style="width: 80%; height: 6%; font-size: 60%;">关闭本窗口</button>
+            </div>
+            <br>
+        </div>   <!-- 帮助主内容结束 -->
+
+    </div>
+
+    <!-- 顶部文字闪烁动画图层 -->
+    <div id="singleStar"></div><div id="shiningWords"></div> 
+
+</div></body>
+</html>

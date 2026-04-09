@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 
+  最后编辑日期：2026.3.21
+ -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>自行制作唠铁APP指南</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: #f9fafb;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 10px; }
+    header p { opacity: 0.95; font-size: 1rem; }
+    .notice {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 18px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+    section {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    h2 {
+      color: #5a67d8;
+      font-size: 1.4rem;
+      margin: 0 0 18px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eef2f7;
+    }
+    h3 {
+      color: #4a5568;
+      font-size: 1.15rem;
+      margin: 22px 0 12px 0;
+    }
+    ol, ul { padding-left: 24px; margin: 12px 0; }
+    li { margin: 8px 0; }
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 0.9rem;
+      margin: 15px 0;
+      border-left: 4px solid #667eea;
+    }
+    .code-block code { white-space: pre-wrap; word-break: break-all; }
+    .note {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 12px 18px;
+      margin: 15px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: #2c5282;
+    }
+    .highlight {
+      background: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .step-list { counter-reset: step; list-style: none; padding-left: 0; }
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 36px;
+      margin: 14px 0;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 0;
+      width: 24px; height: 24px;
+      background: #667eea;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    a { color: #667eea; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      header { padding: 25px 20px; }
+      section { padding: 20px; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>自行制作唠铁APP指南</h1>
+    <p>面向普通人的实用教程</p>
+  </header>
+
+  <div class="notice">
+    <strong>提示：</strong>下述两种方法均免费，但可能需要忍受广告等。
+  </div>
+
+  <!-- 方法一 -->
+  <section>
+    <h2>【第一种方法】使用 HBuilderX 封装唠铁APP</h2>
+    <p>这是比较专业的方法。</p>
+
+    <h3>【一、环境准备】</h3>
+    <ol class="step-list">
+      <li>下载安装：访问 HBuilderX 官网（<a href="https://www.dcloud.io/" target="_blank"><span id="app-url2" style="color: #333a9e; font-size: 16px;">www.dcloud.io</span></a>）下载并安装最新版本。</li>
+      <li>账号注册：注册 DCloud 账号，并在 HBuilderX 中登录。</li>
+      <li>实名认证：若使用云打包功能，需在 DCloud 开发者中心完成实名认证。</li>
+    </ol>
+
+    <h3>【二、创建项目】</h3>
+    <ol class="step-list">
+      <li>启动 HBuilderX，点击菜单栏 <span class="highlight">文件 &gt; 新建 &gt; 项目</span>。</li>
+      <li>选择 <span class="highlight">5+ App</span> 模板，选择 <span class="highlight">默认模板</span>。</li>
+      <li>输入项目名称，选择存储路径，点击 <span class="highlight">创建</span>。</li>
+    </ol>
+
+    <h3>【三、配置 manifest.json】</h3>
+    <ol class="step-list">
+      <li>在项目根目录找到 <span class="highlight"><code>manifest.json</code></span> 文件并打开。</li>
+      <li>【基础配置】：设置 App 名称、标识（Package Name，需唯一）、版本号。一般使用默认即可。<br>
+      在 <span class="highlight">应用入口页面(首页)地址</span> 输入打包网址：<br><span class="highlight">https://www.holomind.com.cn/litalk/chat_robot.html?uf=您的名字拼音</span>
+      <br>其中【您的名字拼音】是与阿色给您的唠铁网址（https://www.holomind.com.cn/litalk/您的名字拼音）中相同的。形如：<br><span class="highlight">https://www.holomind.com.cn/litalk/chat_robot.html?uf=wanglaoliu</span></li>
+      <li>【图标配置】：在"<span class="highlight">自动生成图标</span>"项中，指定一个图片（只认.png，且尺寸大于200*200）；然后按"<span class="highlight">自动生成所有图标并替换</span>"键。</li>
+      <li>【模块配置】：在"<span class="highlight">模块配置</span>"中，去掉"<span class="highlight">Contact(通讯录)</span>、<span class="highlight">Geolocation(定位)</span>"选项。</li>
+      <li>【权限配置】：在"<span class="highlight">权限配置</span>"中，找到 <br><span class="highlight"><code>&lt;uses-permission android:name="android.permission.READ_CONTACTS"/&gt;</code></span>，<br>删掉它。</li>
+    </ol>
+
+    <h3>【四、打包 APK 文件】</h3>
+    <ol class="step-list">
+      <li>点击菜单栏 <span class="highlight">发行 &gt; App-云打包</span>。</li>
+      <li>选择平台：勾选 <span class="highlight">Android</span>。</li>
+      <li>证书配置：选择 <span class="highlight">使用云端证书</span>。</li>
+      <li>打包类型：选择 <span class="highlight">打正式包</span>。</li>
+      <li>广告联盟：去掉所有选择。</li>
+      <li>打包方式：选择 <span class="highlight">快速安心打包</span>。</li>
+      <li>点击 <span class="highlight">打包</span>键，等待云端编译完成（大约排队10分钟），过程中询问都点"<span class="highlight">继续打包</span>"。</li>
+    </ol>
+
+    <h3>【五、获取、安装、分发 App 安装包】</h3>
+    <ol class="step-list">
+      <li>打包完成后，.apk 文件会保存在本地电脑中，HBuilderX 将在底部显示文件夹。</li>
+      <li>找到该 .apk 文件，它就是 App 安装文件包。</li>
+      <li>将 .apk 文件传输至 Android 设备进行安装测试。</li>
+      <li>测试没问题的 .apk 即可分享给朋友们了，也应上传至唠铁服务器。<br/>
+        如果测试有问题，可尝试清除原app的数据，或删除旧的app重新安装。<br>
+        <em>经验：可以使用微信的收藏功能把你分发的 .apk 文件或网址保存，方便下次分发。<br><a href="guide_install_share_app.html" style="color: #333a9e;" target="_blank"><span style="color: #28a745;">* 安装和分发唠铁的技巧：点击查看</span></a></em>
+      </li>
+    </ol>
+    <div class="note">
+      <strong>注：</strong>如需要帮助，可联系阿色，但阿色鼓励你自己先试试，挺有意思的。
+    </div>
+  </section>
+
+  <!-- 方法二 -->
+  <section>
+    <h2>【第二种方法】使用网页版打包工具 WebIntoApp 封装唠铁APP</h2>
+    <p>这是比较简单的方法，有广告。</p>
+    <ol class="step-list">
+      <li>进入网站：<a href="https://www.webintoapp.com/" target="_blank">https://www.webintoapp.com/</a> <p><strong>教程：</strong>点击网站上的 Watch Video</p></li>
+      <li>免费注册账号：网页右上角 <span class="highlight">Author/Register</span></li>
+      <li>回到网站首页，点击 <span class="highlight">GET STARTED</span> 开始；</li>
+      <li>在 App Maker 表单中填写：
+        <ul>
+          <li>左边 <strong>URL</strong>: 填写打包网址：<br><span class="highlight">https://www.holomind.com.cn/litalk/chat_robot.html?uf=您的名字拼音</span>
+          <br>其中【您的名字拼音】是与阿色给您的唠铁网址（https://www.holomind.com.cn/litalk/您的名字拼音）中相同的。例如：<br><span class="highlight">https://www.holomind.com.cn/litalk/chat_robot.html?uf=wanglaoliu</span></li>
+          <li>右边 <strong>Extras</strong>：点 <span class="highlight">Set Icon</span> 设置 logo。只允许使用 128px 的 PNG 文件，需要事先处理好。</li>
+        </ul>
+      </li>
+      <li>点击 <span class="highlight">Next</span>；</li>
+      <li>填 <strong>App Name</strong>（你想给你的 App 定的名字），例如：<code>xiaoxiao</code>，<em>中文不允许</em>；<br/>
+          填 <strong>Package Name</strong>（App 文件包名字），例如 <code>litalk.xiaoxiao.android</code>；</li>
+      <li>点击 <span class="highlight">Next</span>；</li>
+      <li>点击 <span class="highlight">Make App</span>；需要密码。</li>
+      <li>稍等，在 Apps List 下面将列出已经做好的 App；点击"云"图标，再点 <span class="highlight">Download | FREE</span>，再点 <span class="highlight">Download All Files(ZIP)</span> 下载；</li>
+      <li>找到下载的文件，双击打开，在 <code>android</code> 文件夹中找到 <code>app-release.apk</code>，这个就是编译好的 App 安装文件包，把它复制保存即可分发上传了。</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 唠铁 LiTalk · 阿色教授 提供技术支持</p>
+  </footer>
+
+</body>
+</html>

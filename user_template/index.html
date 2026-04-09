@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!-- 
+    最后修改日期：2026.3.20
+    此为防劫持加固板
+-->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唠铁 (LiTalk)</title>
+    
+    <!-- 🔹 新增：内容安全策略 -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' https:;
+      connect-src 'self' https://www.holomind.com.cn https://api.holomind.com.cn;
+      frame-src 'none';
+      form-action 'self';
+      base-uri 'self';
+      upgrade-insecure-requests;
+    ">
+    
+    <script>
+        // 环境配置
+        const CONFIG = {
+            allowedHosts: ['www.holomind.com.cn', 'holomind.com.cn'],
+            folderRegex: /^[a-zA-Z0-9_-]{3,32}$/,
+            isDebug: false  // 发布时设为 false
+        };
+
+        function safeLog(msg) {
+            if (CONFIG.isDebug) console.log(msg);
+        }
+
+        function extractFolderName(pathname) {
+            pathname = pathname.split('?')[0].split('#')[0];
+            pathname = pathname.replace(/\/index\.html$/, '/');
+            const parts = pathname.split('/').filter(p => p.length > 0);
+            return parts.length > 0 ? parts[parts.length - 1] : null;
+        }
+
+        window.onload = function() {
+            try {
+                // 🔹 新增：域名校验
+                if (!CONFIG.allowedHosts.includes(window.location.hostname)) {
+                    safeLog('[Security] Blocked host: ' + window.location.hostname);
+                    document.body.innerHTML = '<h2 style="color:red">访问被拒绝</h2>';
+                    return;
+                }
+
+                // 提取文件夹名称
+                const currentFolderName = extractFolderName(window.location.pathname);
+                if (!currentFolderName) {
+                    throw new Error('无法解析文件夹名称');
+                }
+                safeLog('文件夹名称: ' + currentFolderName);
+
+                // 🔹 新增：文件夹名称白名单校验
+                if (!CONFIG.folderRegex.test(currentFolderName)) {
+                    throw new Error('非法文件夹名称: ' + currentFolderName);
+                }
+
+                // 构建跳转链接
+                const targetUrl = '../chat_robot.html?uf=' + encodeURIComponent(currentFolderName);
+                safeLog('跳转到: ' + targetUrl);
+                
+                // 执行跳转
+                window.location.href = targetUrl;
+
+            } catch (error) {
+                console.error('[Error] ' + error.message);
+                document.body.innerHTML = '<h2 style="color:red">系统错误，请联系管理员</h2>';
+            }
+        };
+    </script>
+</head>
+<body></body>
+</html>

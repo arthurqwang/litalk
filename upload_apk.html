@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<!-- 
+【本文件名】：upload_apk.html
+【版本】：V 0.1
+【最后修改日期】：2026.3.11
+【作者】：王权 大系统观开放论坛
+【功能】：
+    Litalk用户上传自己的App安装包文件apk，安卓。
+    基础目录： '/www/wwwroot/www.holomind.com.cn/litalk'，这是在服务器端upload_file.js中定义的，此处前端不控制。
+    可通过 upload_apk.html?dir=userdir 传到基础目录下面的指定用户目录。userdir需要已经存在。
+-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上传LiTalk个人App安装文件包</title> 
+  <style>
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      line-height: 1.6;
+      background: #000;
+      color: #bbb;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    a {
+      text-decoration: none; /* 去掉下划线 */
+      color: #666666;        /* 深灰色 */
+    }
+
+    a:link, a:visited, a:hover, a:active {
+      color: #666666;        /* 确保所有状态都是深灰色 */
+      text-decoration: none; /* 确保所有状态都没有下划线 */
+    }
+
+    a:hover {
+      color: #2020d1;        /* 鼠标悬浮时变为蓝色 */
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 0px;
+      font-size: 24px;
+      width: 350px;
+      height: 60px;
+
+      /* 圆角 */
+      border-radius: 15px;
+
+      /* 立体感 */
+      background-color: #9fe6bc;
+      color: #333;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+      /* 悬停过渡动画 */
+      transition: all 0.3s ease;
+    }
+
+    /* 悬停时：阴影增强 + 上移 + 变暗 */
+    button:hover {
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+      background-color: #e0e0e0; /* 变暗的颜色（灰色系） */
+    }
+
+    /* 点击时轻微下压 */
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* 以下用于文件上载 */
+    .file-upload-wrapper {
+      display: block;
+      width: fit-content;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .file-upload-btn {
+      width: 350px;
+      height: 80px;
+      background: #f0f0f0;
+      color:#333;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 24px;
+      margin: 0 auto;
+      line-height: 80px; /* 垂直居中文字 */
+      box-sizing: border-box; /* 确保padding/border不撑大元素 */
+      display: inline-block;  /* 使width/height生效（label默认是inline） */
+  }
+  
+    #file-input {
+        display: none; /* 完全隐藏文件输入框 */
+    }
+
+    .file-upload-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-name {
+        margin-top: 10px;
+        font-family: Arial, sans-serif;
+        color: #fff;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .success {
+        color: #2ecc71;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+  </style>
+</head>
+
+<body>
+<!-- LOGO、按键 -->
+<div id="begin" class="wrapper">
+  <div>
+    <br><br><br>
+    <img src="img/litalk_logo.png" style="width: 40%;">
+    <br>
+    <span style="margin: 0; font-size: 1.5rem; font-weight:800; color: #3497da;">上传个人App安装文件包</span>
+    <br>
+    请选择要上传的.apk文件(安卓)<br>
+    <form action="https://www.holomind.com.cn/upload" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+        <div class="file-upload-wrapper">
+          <label class="file-upload-btn" for="file-input">
+            <span id="btn-text">选择文件</span>
+          </label>
+      
+          <!-- 下面的 accept不能写，否则 HBuilderX 编译成app后无法选择文件 -->
+          <input 
+            type="file" 
+            name="file" 
+            required 
+            class="file-upload-input" 
+            id="file-input"
+          >
+
+          <div class="file-name" id="file-name">未选择文件</div>
+          <div class="error" id="error-message"></div>
+          <div class="success" id="success-message"></div>
+      </div>
+      <br>
+      <span id="upload-hint" style="display:none; color: lightgreen; animation: blink 1s infinite;"> </span>
+      <style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }</style>
+      <br><button type="submit" 
+        onclick="if(document.getElementById('upload-hint').style.display == 'block') {document.getElementById('upload-hint').innerHTML='正在上传，请稍候...';}">上传</button>
+      <br><button type="button" onclick="window.history.back();">返回</button>
+    </form>
+
+    <br><br>
+    <h2>【注意】</h2>
+    <p>上传后，你的文件将可以被任何人下载，请自行把握信息保密。</p>
+    <p>请确保上传的文件不涉及敏感信息。</p>
+    <p>如有问题，责任自负，本网站不承担任何责任。</p>
+    <p>上传文件即表示你同意公开你的文件，并同意上述约定。</p>
+    <br>
+    <h3>大系统观及网站宗旨</h3>
+    <p>免费开源 自由使用 自由复制 自由分享</p>
+  </div>
+</div>
+
+<div class="wrapper" >
+  <p><a href="#begin">返回顶部</a></p>
+</div>
+
+
+<script>
+  // 解析URL参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const dir = urlParams.get('dir') || 'nodir'; // 如果没有提供dir参数，使用不存在的目录名，将出错
+  const utt = '4';    // 表示上传的是安装包apk
+
+  // 动态设置表单action
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    form.action = `/upload?dir=${encodeURIComponent(dir)}&utt=${encodeURIComponent(utt)}`;
+  });
+</script>
+
+<script>
+  const fileInput = document.getElementById('file-input');
+  const fileNameDisplay = document.getElementById('file-name');
+  const btnText = document.getElementById('btn-text');
+  const errorMessage = document.getElementById('error-message');
+  const successMessage = document.getElementById('success-message');
+
+  // 允许的文件扩展名
+  const allowedExtensions = ['apk']; 
+  // 最大文件尺寸（10MB）
+  const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+
+  fileInput.addEventListener('change', function(e) {
+      errorMessage.textContent = ''; // 清空错误信息
+      successMessage.textContent = ''; // 清空成功信息
+
+      if (fileInput.files.length === 0) {
+          fileNameDisplay.textContent = "未选择文件";
+          btnText.textContent = "选择文件";
+          return;
+      }
+
+      let allFilesValid = true;
+      let fileListInfo = "";
+
+      // 检查每个文件
+      for (let i = 0; i < fileInput.files.length; i++) {
+          const file = fileInput.files[i];
+          const fileName = file.name;
+          // const fileExt = fileName.split('.').pop().toLowerCase();
+          const fileExt = fileName.toLowerCase().includes('.apk') ? 'apk' : (fileName.split('.').pop() || '').toLowerCase();
+          const fileSize = file.size;
+
+          // 检查文件扩展名
+          if (!allowedExtensions.includes(fileExt)) {
+              errorMessage.textContent = `错误：文件 "${fileName}" 类型不允许（仅允许 .apk）`;
+              allFilesValid = false;
+              break;
+          }
+
+          // 检查文件大小
+          if (fileSize > maxFileSize) {
+              const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
+              errorMessage.textContent = `错误：文件 "${fileName}" 过大（${sizeInMB}MB，限 10MB）`;
+              allFilesValid = false;
+              break;
+          }
+
+          // 记录文件名（用于显示）
+          fileListInfo += `"${fileName}" (${(fileSize / 1024).toFixed(2)}KB), `;
+      }
+
+      if (!allFilesValid) {
+          fileInput.value = ""; // 清空无效选择
+          fileNameDisplay.textContent = "未选择文件";
+          btnText.textContent = "选择文件";
+          return;
+      }
+
+      // 显示成功信息
+      if (fileInput.files.length === 1) {
+          fileNameDisplay.textContent = `已选择: ${fileListInfo.slice(0, -2)}`;
+      } else {
+          fileNameDisplay.textContent = `已选择 ${fileInput.files.length} 个文件：${fileListInfo.slice(0, -2)}`;
+      }
+      successMessage.textContent = "文件验证通过！";
+      btnText.textContent = "重新选择";
+
+      // 允许显示：正在上传，请稍候...
+      document.getElementById('upload-hint').style.display = 'block';
+  });
+
+</script>
+</body>
+</html>

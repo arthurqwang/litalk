@@ -1,0 +1,15 @@
+{
+  "user_name": "",
+  "robot_name": "小小",
+  "short_intro": "已开通唠铁，等待主人自行设置。设置后即可正常使用。",
+  "long_intro": "唠铁普通用户，是阿色教授的朋友，刚刚开通唠铁账号，正在等待自行设置。用户可上传自己的知识库。",
+  "role_def": "你是一个AI助手，能够代替主人回答有关问题。",
+  "output_req": "",
+  "llm_temperature": "0.5",
+  "background_color": "#000000",
+  "text_color": "#ffffff",
+  "use_bsv": "1",
+  "user_self_key": "",
+  "p_code": "lt::U1hRRQcG",
+  "updated_at": "2026-04-03T02:07:25.517Z"
+}

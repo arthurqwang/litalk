@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- index.html -->
+    <!-- 唠铁 LiTalk的首页 -->
+    <!-- 最后修改日期：2026.4.2 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唠铁 LiTalk</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        .promo-image {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 100%;
+            width: 500px;
+            height: auto;
+        }
+        .welcome-text {
+            text-align: center;
+            font-size: 36px;
+            color:#21dbf3;
+            margin-bottom: 40px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 28px;
+            color:#21dbf3;
+            margin-bottom: 20px;
+        }
+        .intro-text {
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .examples {
+            text-align: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .example-img {
+            width: 300px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #828586;
+        }
+        .disclaimer-text {
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .apply-button {
+            display: block;
+            margin: 0 auto 40px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .wechat-code {
+            width: 200px;
+            height: auto;
+            margin-top: 15px;
+        }
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            width: 200px;
+            border: 1px solid #555;
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease; /* 添加过渡效果 */
+        }
+        .card:hover {
+            transform: scale(1.2); /* 鼠标悬停时放大 10% */
+        }        
+        .card-logo {
+            width: 80px;
+            height: 80px; /* Make it square to create perfect circle */
+            margin-bottom: 10px;
+            border-radius: 50%; /* This creates the circular shape */
+            object-fit: cover; /* Ensures the image fills the circle properly */
+            border: 3px solid #555;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        .card-intro {
+            height: 60px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .card-counter {
+            height: 10px;
+            font-size: 10px;
+        }
+        .maintain-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .footer-links {
+            text-align: center;
+            font-size: 20px;
+        }
+        .footer-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        button:disabled {
+            background-color: #ccc;  /* 灰色背景 */
+            color: #666;            /* 灰色文字 */
+            cursor: default;        /* 强制显示箭头（默认指针） */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 第一部分：顶部宣传图片 -->
+        <div class="section">
+            <div style="height: 100px;"></div>
+            <img src="img/face_pic.png" alt="宣传图片" class="promo-image">
+            <div class="welcome-text">欢迎使用【唠铁 LiTalk】!</div>
+        </div>
+
+        <!-- 第二部分：介绍唠铁 -->
+        <div class="section">
+            <div class="subtitle">唠铁是什么？</div>
+            <div class="intro-text">
+                【唠铁(LiTalk)】是一个基于大语言模型的轻量级文字聊天AI助手智能体。有了他，你将“独有”一个专属于你的手机app，他在虚拟空间中作为你的“数字分身”存在，不分日夜地代替你应答询问，保持你与世界的联系。
+                <br><br>
+                【唠铁】由阿色自己的AI助手【小B博士】扩展开发而来，是阿色为朋友们专门定制的私人服务，不对商用开放。需要的朋友请亲自联系阿色开通服务。服务开通后，你只要上传你自己知识库，【唠铁】即可依照你的知识库来回答问题。你可以随时更新你的知识库，【唠铁】会自动按照最新知识库工作。
+                <br><br>
+                【唠铁】的运行界面与【小B博士】基本相同，见下图。
+                <br><br>
+            </div>
+            <div class="examples">
+                <img src="img/DrB_example1.jpg" alt="示例1" class="example-img">
+                <img src="img/DrB_example2.jpg" alt="示例2" class="example-img">
+                <br>
+                <img src="img/DrB_example3.jpg" alt="示例3" class="example-img">
+                <img src="img/DrB_example4.jpg" alt="示例4" class="example-img">
+            </div>
+        </div>
+        <br><br><br><br>
+
+        <!-- 第三部分：免责声明 -->
+        <div class="section">
+            <div class="subtitle">免责声明</div>
+            <div class="disclaimer-text">
+                本服务是为个人免费提供的非商业性工具，主要目的是为朋友们提供便利和乐趣。使用本服务即视为你已阅读、理解并同意以下全部约定，自愿承担使用风险：<br><br>
+ 
+                &nbsp;&nbsp;&nbsp;&nbsp;1. 服务为免费共享，不保证服务质量，不承诺不间断、无故障运行，阿色有权无条件任意调整、暂停或终止服务，无需另行通知，不承担任何损失赔偿；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;2. 阿色自行决定系统开发、升级与运维等工作，欢迎你提出意见建议，但阿色保留不采纳的权利；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;3. 阿色会尽快处理你的申请，但保留拖延和拒绝的权利；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;4. 服务开通后，你的名字和相关信息会在本页下部显示，如不希望公开，请及时联系阿色隐藏；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;5. 请妥善保管自身设备及使用信息，你上传的全部信息都将作为公开信息处理；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;6. 禁止上传任何违法、涉密、色情、敏感或不宜公开的信息，因信息泄露或使用不当等原因导致的任何问题，由你本人自行负责；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;7. 严禁利用本服务从事违法、违规、侵权，以及任何违反公序良俗的行为，否则将立即停止服务，相关法律责任由你自行承担；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;8. 本服务仅提供基础功能，所给出的结果仅作参考，阿色不对其准确性、有效性负责，你据此做出的任何决策，风险自行承担；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;9. 无论何种原因，你的数据丢失、损坏、泄露等问题，阿色均不承担赔偿责任，建议你自行备份重要数据；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;10. 本服务的全部知识产权归阿色所有，禁止任何用于非法或不正当目的的反向工程、破解、篡改、复制及二次传播行为；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;11. 若使用过程中产生争议，优先按照“致良知”的原则友好协商解决，协商不成的，由阿色所在地管辖；<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;12. 本约定文本解释权归阿色所有。
+            </div>
+        </div>
+        <br><br><br><br>
+
+        <!-- 第四部分：申请按键 -->
+        <div class="section">
+            <button class="apply-button" id="applyBtn"><span style="font-size: 24px;">申请开通</span><br>（点击此键即表示你同意上述条款）</button><br>
+            <div style="text-align: center;">
+                <span style="font-size: 20px; color:#4CAF50;">
+                    <span style="font-size: 22px; font-weight: bold;">【提前准备材料】</span><br>
+                    为了方便你尽快正常使用【唠铁】，你可以进入下面【试用用户】的【设置】界面了解如何提前准备知识库等资料。<br>
+                    你可以先准备MarkDown格式的文本文件作为你的知识库，等服务开通后再上传即可。<br>
+                    下载知识库文件模板：<a href="knowledge_base_template.md" style="color: #87ceeb;" download>knowledge_base_template.md</a>
+                </span><br>
+
+            </div>
+            
+
+        <!-- 模态窗口 -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <br>
+                <p>请扫描下面二维码<br>添加阿色微信申请开通【唠铁】</p>
+                <img src="img/arthur_wechat_code.png" alt="微信二维码" class="wechat-code">
+                <br><br>
+                <span style="font-size: 16px;">* 阿色会尽快处理你的申请，但保留拖延和拒绝的权利</span>
+                <br><br>
+            </div>
+        </div>
+
+        <br><br><br><br><br><br><br><br>
+        <!-- 第五部分：展示已开通的朋友名片 -->
+        <div class="section">
+            <div class="subtitle">已开通【唠铁】的朋友</div>
+            <p style="text-align: center;"><br><span style="font-size: 20px; font-weight: bold;">【注意】</span><br>服务开通后，你的名字和相关信息会在此显示，如不希望公开，请及时联系阿色隐藏。<br><br>
+            <span style="font-size: 20px; font-weight: bold;">【安装app】</span><br>
+            点击【下载app】或【扫描二维码】，即可下载该用户的【唠铁】app的安装apk包。<br>
+            下载后在手机文件管理器中找到该apk包，点击即可安装，安装过程中需要允许相关权限。<br><br>
+            <span style="font-size: 20px; font-weight: bold;">【网页版】</span><br>
+            浏览者点击【网页版】按钮，可以在浏览器中模拟手机界面使用。<br><br>
+            <span style="font-size: 20px; font-weight: bold;">【用户自行维护】</span><br>
+            用户点击自己名下的【设置】按钮，即可进入运维界面，在那里你可以上传和管理你的知识库等资料。
+            <br><br>
+            <span id="DIV_CARD_LOADING_TEXT" style="color: #4CAF50;"><br><br><br><br>名片加载中，请稍候...</span><br>
+            </p>
+
+            <div class="cards-container">                
+            </div>
+        </div>
+        <br><br>
+        <!-- 开通、设置、分发步骤 -->
+        <div class="subtitle">操作指南</div>
+        <div class="section footer-links">
+            <a href="open_account_steps.html" target="_blank">① 唠铁开通设置分发步骤</a>
+            <a href="url2app.html" target="_blank">② 自行制作唠铁APP指南</a>
+            <a href="guide_install_share_app.html" target="_blank">③ 安装和分发唠铁的技巧</a>
+        </div>
+
+        <!-- 第六部分：底端链接 -->
+        <div class="section footer-links">
+            <br><br>
+            <a href="http://www.holomind.com.cn" target="_blank">返回【大系统观】官网</a>
+        </div>
+    </div>
+
+    <!-- 引入二维码动态生成QRCode.js库（使用CDN地址，无需本地下载） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+
+        // 获取需要展示的用户名单（目录）
+        const SHOWN_USERS_LIST_URL = `https://www.holomind.com.cn/litalk/shown_users.lst?t=${Date.now()}`;  // 用户名单文本文件URL, 加时间戳，防止缓存
+        let SHOWN_USERS_LIST_TEXT ='';
+        let SHOWN_USERS_ENTRIES;    // 用户名单数组
+        const cardsContainer = document.querySelector('.cards-container');     // 名片容器
+
+        // 获取用户名单文本
+        (async () => {
+        try {
+            
+            // 拉取文件内容
+            SHOWN_USERS_LIST_TEXT = await fetchTextFromUrl(SHOWN_USERS_LIST_URL);
+            // 去掉注释  /* 注释内容  */
+            SHOWN_USERS_LIST_TEXT = SHOWN_USERS_LIST_TEXT.replace(/\/\*[\s\S]*?\*\//g, '');
+            // 按#分割成用户数组
+            SHOWN_USERS_ENTRIES = SHOWN_USERS_LIST_TEXT.split('#').map(entry => entry.trim()).filter(entry => entry.length > 0);
+            // 生成用户名片
+            generateUserCards();
+
+        } catch (error) {
+            console.error('获取用户列表文本错误:', error);
+        }
+        })();
+
+        // 通过url获取文本
+        async function fetchTextFromUrl(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+            throw new Error(`HTTP 错误！状态码: ${response.status}`);
+            }
+            const text = await response.text();
+            return text;
+        } catch (error) {
+            console.error('获取文本失败:', error);
+        }
+        }
+
+
+        // 生成用户名片
+        // 获取各个用户信息
+        function generateUserCards() {
+            for (let i = 0; i < SHOWN_USERS_ENTRIES.length; i++) {
+
+                // console.log('用户:\n', SHOWN_USERS_ENTRIES[i]); 
+
+                // 使用fetch API获取JSON文件 user_info.json，获得用户信息，需要刷新
+                fetch(`${SHOWN_USERS_ENTRIES[i]}/user_info.json?t=${Date.now()}`)
+                    .then(response => {
+                        if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let SHOWN_ROBOT_NAME = '';
+                        let SHOWN_SHORT_INTRO = '';
+                        SHOWN_ROBOT_NAME = data.robot_name;
+                        // 如果获取的昵称为空，则用目录名代替，管理员初始化一个用户时设为空
+                        if (SHOWN_ROBOT_NAME === '') {
+                            SHOWN_ROBOT_NAME = SHOWN_USERS_ENTRIES[i];   
+                        }
+                        // 如果为试用用户，则显示“试用”
+                        if (SHOWN_USERS_ENTRIES[i] === 'test_user') {
+                            SHOWN_ROBOT_NAME += '<span style="color: #4CAF50;">(试用:随时清除)</span>';
+                        }
+                        SHOWN_SHORT_INTRO = data.short_intro;
+
+                        console.log('------------------------------');
+                        console.log('用户:\n', SHOWN_USERS_ENTRIES[i]); 
+                        console.log('昵称:\n', SHOWN_ROBOT_NAME); 
+                        console.log('短介绍:\n', SHOWN_SHORT_INTRO); 
+                        
+                        // 清除加载中文字
+                        document.getElementById('DIV_CARD_LOADING_TEXT').innerHTML = '';
+                        
+                        // 使用fetch API获取JSON文件 counter.json，获得用户调用llm次数和最后时间
+                        fetch(`${SHOWN_USERS_ENTRIES[i]}/counter.json?t=${Date.now()}`)
+                            .then(response => {
+                                if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                let SHOWN_COUNTER =  data.times_call_llm;
+                                let SHOWN_DATE_TIME = data.date_time;
+                                let SHOWN_COUNTER_COLOR = '';
+
+                                // 用户最后使用是否超过24小时，不超过的话，计数器标红颜色
+                                const targetTimestamp = new Date(SHOWN_DATE_TIME).getTime();
+                                const currentTimestamp = Date.now();
+                                const timeDiffMs = currentTimestamp - targetTimestamp;
+                                const timeDiffHours = timeDiffMs / (1000 * 60 * 60); // 1小时 = 1000毫秒*60秒*60分钟
+                                if (timeDiffHours < 24) {
+                                    SHOWN_COUNTER_COLOR =' style="color: red;"';
+                                }
+                                
+                                // 创建该用户名片
+                                const card = createUserCard(SHOWN_USERS_ENTRIES[i], SHOWN_COUNTER, SHOWN_COUNTER_COLOR, SHOWN_DATE_TIME, SHOWN_ROBOT_NAME, SHOWN_SHORT_INTRO);
+                                cardsContainer.appendChild(card);
+
+                                // 生成该用户的二维码
+                                setOneUserQRCode(SHOWN_USERS_ENTRIES[i]);
+
+                            })
+                            .catch(error => {
+                                console.error('Error fetching or parsing counter.json:', error);
+                            });
+
+                    })
+                    .catch(error => {
+                        console.error('Error fetching or parsing user_info.json:', error);
+                    });
+
+            }
+        }
+
+        // 创建一个名片
+        function createUserCard(userDir, counter, counterColor, dateTime, nickName, shortIntro) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card_${userDir}`;
+            card.innerHTML = `
+                <img src="${userDir}/user_logo.png?t=${new Date().getTime()}" alt="用户Logo" class="card-logo" >
+                <div class="card-counter" title="${dateTime}" ${counterColor}>含铁量：${counter}唠</div>
+                <div class="card-intro">【${nickName}】<br>${shortIntro}</div>
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: transparent; border: 0px solid #6b2238;">
+                    <div id="qrcode_${userDir}" style="color: #087b9e; background-color: #ffffff; border: 0px solid #087b9e; border-radius: 5px; margin: 0 auto; width: fit-content;">
+                    </div>
+                </div>
+                <br>
+                <button class="maintain-btn" id="download-btn-${userDir}" disabled onclick="window.open('${userDir}/litalk.${userDir}.android.apk', '_blank')">下载app</button>
+                <button class="maintain-btn" onclick="window.open('${userDir}/index.html', '_blank')">网页版</button>
+                <button class="maintain-btn" onclick="window.open('user_edit.html?uf=${userDir}', '_self')">设置</button>
+            `;
+            return card;
+        }
+
+
+        // 显示一个用户的二维码
+        function setOneUserQRCode(userDir) {
+
+            let div_name = `qrcode_${userDir}`;
+            let user_url = `https://www.holomind.com.cn/litalk/${userDir}/litalk.${userDir}.android.apk`;
+            let card_div_name = `card_${userDir}`;
+
+            console.log("二维码 DIV：", div_name, "  App 地址：", user_url);
+            
+            // 生成用户二维码
+            // 根据屏幕高度动态设置二维码大小
+            let qrcodeWidthOut = 100;  //二维码外框宽度
+            document.getElementById(div_name).style.width = qrcodeWidthOut + "px"; // 按钮宽度设为二维码宽度的两倍
+            document.getElementById(div_name).style.height = qrcodeWidthOut + "px";
+
+            // 生成/更新二维码的核心函数
+            function generateQRCode(user_url) {
+                // 校验网址格式（简单校验，确保有http/https）
+                if (!/^https?:\/\//i.test(user_url)) {
+                    alert('请输入有效的网址（需以http://或https://开头）');
+                    return;
+                }
+
+                let qrcodeWidthIn = qrcodeWidthOut - 0; // 二维码宽度，自动适应屏幕高度
+                // new QRCode 不要放前面，否则当生成二维码的js不在线时会影响下载链接按钮的显示
+                let qrcode = new QRCode(document.getElementById(div_name), {
+                    width: qrcodeWidthIn, // 二维码宽度
+                    height: qrcodeWidthIn,
+                    colorDark: '#087b9e', // 深色（二维码颜色）
+                    colorLight: '#ffffff', // 浅色（背景颜色）
+                    correctLevel: QRCode.CorrectLevel.H // 容错级别（H最高）
+                });
+
+                // 清除旧的二维码，生成新的
+                qrcode.clear(); 
+                qrcode.makeCode(user_url); 
+                console.log('二维码已更新，网址：', user_url);
+            }
+            
+            // 检查apk包是否存在，如果存在则显示下载键和下载二维码
+            fetch(user_url, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        // APK包存在，显示下载键和二维码
+                        console.log(`APK包存在: ${user_url}`);
+                        document.getElementById('download-btn-' + userDir).disabled = false;   // 允许下载app按钮
+                        generateQRCode(user_url); // 传入动态网址生成二维码   
+                    } else {
+                        // APK包不存在，隐藏下载键和二维码
+                        console.log(`APK包不存在: ${user_url}`);
+                        document.getElementById(div_name).innerHTML = '<br>app安装包尚未生成，请稍后下载。';
+                        document.getElementById('download-btn-' + userDir).disabled = true;   // 禁用下载app按钮
+                    }
+                })
+                .catch(error => {
+                    console.error('检查APK包存在性时出错:', error);
+                });
+
+        }
+
+
+        // 模态窗口功能
+        const modal = document.getElementById('modal');
+        const applyBtn = document.getElementById('applyBtn');
+        const closeBtn = document.querySelector('.close');
+
+        applyBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

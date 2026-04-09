@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 
+【本文件名】：user_edit.html
+【版本】：V 0.1
+【最后修改日期】：2026.3.31
+【作者】：王权 大系统观开放论坛
+【功能】：
+    设置Litalk用户。
+-->
+
+<head>
+    <script>
+        // 唠铁的版本号
+        const VER = '1.0.20';
+        const UPDATE_DATE = '2026.3.24';
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唠铁设置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .section {
+            background-color: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #555;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #3497da;
+            display: block;
+        }
+
+        .section-text {
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #3497da;
+            display: block;
+        }        
+        
+        .section-kd {
+            background-color: #032b36;
+            border-radius: 12px;
+            border: 1px solid #555;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        }
+        
+        textarea.input-field {
+            min-height: 60px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #444;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .template-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #6a11cb;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .template-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            padding: 8px 15px;
+            border-radius: 6px;
+            background-color: rgba(37, 117, 252, 0.1);
+        }
+        
+        .back-link:hover {
+            opacity: 0.9;
+            background-color: rgba(37, 117, 252, 0.2);
+        }
+        
+        .save-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.6);
+        }
+        
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .load-example-btn {
+
+            border: 1px solid #555;
+            font-size: 0.8rem;
+            font-weight: 400;
+            border-radius: 2px;
+            cursor: pointer;
+            width: 5rem;
+            transition: all 0.3s;
+        }        
+        
+        .allowed-formats {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(106, 17, 203, 0.3);
+            border-radius: 50%;
+            border-top-color: #6a11cb;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status-success {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+            display: block;
+        }
+        
+        .status-error {
+            background-color: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .color-picker-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* 用户logo圆圈 */
+        .card-logo {
+            width: 80px;
+            height: 80px; /* Make it square to create perfect circle */
+            margin-bottom: 10px;
+            border-radius: 50%; /* This creates the circular shape */
+            object-fit: cover; /* Ensures the image fills the circle properly */
+            border: 3px solid #555;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="img/litalk_logo.png" style="width: 50%;">
+                    <br>
+                    <h1>唠铁智能体设置</h1>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 运维码检验 -->
+        <div id="div-p-code" style="display: block; text-align: center; font-size: 1.2rem;">
+            <p>请输入您的运维码</p>
+            <input type="text" id="p-code-input-text" style="font-size: 1rem;">
+            <br>
+            <span id="p-code-err" style="display:none; color: red; font-size: 0.9rem;">运维码错误，无权设置。</span>
+            <br>
+            <button style="height: 2.3rem; width: 10rem; font-size: 1rem; margin: 0.3rem;" onclick="checkPCode(); C_TIMES++;">OK</button>
+            <br>
+            <button  style="height: 2.3rem; width: 10rem; font-size: 1rem; margin: 0.3rem;" onclick="history.back()">返回</button>
+            <br><br>
+            <span id="bsv-web-name" style="font-size: 1.1rem; color:rgb(36, 116, 168);">【大系统观官网】</span><br>
+            <a href="https://www.holomind.com.cn" target="_blank"><span style="font-size: 0.8rem; color:rgb(36, 116, 168);";>www.holomind.com.cn</span></a>
+        </div>
+
+        <!-- 主页面 -->
+        <div id="div-work" style="display: none;">
+        <main>
+            <!-- 用户(主人)姓名 -->
+            <div class="section">
+                <label class="section-title">用户(主人)姓名</label>
+                <label class="section-text">请填写您的真实姓名，本智能体仅限朋友和熟人使用，作者阿色需要知道您是谁。</label>
+                <input type="text" id="user-name" class="input-field" placeholder="请输入您的姓名">
+            </div>
+            
+            <!-- 用户(主人)简短信息 -->
+            <div class="section">
+                <label class="section-title">用户(主人)简短信息</label>
+                <label class="section-text">请填写您的简短介绍，20字左右，超过则禁止输入。该介绍将出现在唠铁首页的用户名片上。</label>
+                <button class="load-example-btn" onclick="loadShortInfo();">导入模板</button>
+                <textarea id="short-intro" class="input-field" placeholder="请输入简短个人信息" maxlength="24"></textarea>
+            </div>
+            
+            <!-- 用户(主人)介绍 -->
+            <div class="section">
+                <label class="section-title">用户(主人)介绍</label>
+                <label class="section-text">请填写您的介绍，100-500字，超过则禁止输入。唠铁智能体基于该介绍了解您的基本情况，所以应该尽量准确。</label>
+                <button class="load-example-btn" onclick="loadLongInfo();">导入模板</button>
+                <textarea id="long-intro" class="input-field" style="height: 400px;" placeholder="请输入您的详细介绍" maxlength="800"></textarea>
+            </div>
+          
+            <!-- 唠铁智能体名称 -->
+            <div class="section">
+                <label class="section-title">智能体名称</label>
+                <label class="section-text">请给您的唠铁取个名字，不超过10个字，超过则禁止输入，应该代表您的品味，遵守公序良俗。</label>
+                <input type="text" id="robot-name" class="input-field" placeholder="请输入智能体名称" maxlength="12">
+            </div>
+            
+            <!-- 定义智能体 -->
+            <div class="section">
+                <label class="section-title">定义智能体</label>
+                <label class="section-text">请描述：您希望您的智能体是个什么样子？100-300字，超过则禁止输入。您可以用拟人的方式描述他，比如可以包括他的性别、年龄(出生日期)、出生地、性格、能力、背景等信息。</label>
+                <label class="section-text"><span style="color: #ff0000;">* 请使用“你”称呼智能体，例如：你是一个大系统观专家，你是男孩，你开朗乐观。</span></label>
+                <button class="load-example-btn" onclick="loadRoleDef();">导入模板</button>
+                <textarea id="role-def" class="input-field" style="height: 138px;" placeholder="请描述智能体的性格、能力、背景等信息" maxlength="400"></textarea>
+            </div>
+            
+            <!-- 要求 -->
+            <div class="section">
+                <label class="section-title">对智能体的要求</label>
+                <label class="section-text">请描述：除了已具备的基本功能外，您对您的智能体还有什么特别的要求？比如，可以要求智能体使用英语或方言回答。200字以内，超过则禁止输入。可不填。</label>
+                <label class="section-text"><span style="color: #ff0000;">* 请使用“你”称呼智能体，例如：请你用东北话回答问题。</span></label>
+                <textarea id="output-req" class="input-field" placeholder="请输入对智能体的特别要求和约束条件，可省略" maxlength="200"></textarea>
+            </div>
+
+            <!-- 智能体温度 -->
+            <div class="section">
+                <label class="section-title">智能体温度</label>
+                <label class="section-text">温度值越高，回答越有创意；越低，回答越精准。范围：0 ~ 1.5</label>
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+                    <input 
+                        type="range" 
+                        id="agent-temperature" 
+                        min="0" 
+                        max="1.5" 
+                        step="0.1" 
+                        value="0.5"
+                        style="flex: 1; height: 6px; cursor: pointer;"
+                    >
+                    <span id="temperature-value" style="min-width: 40px; font-weight: 500;">0.5</span>
+                </div>
+            </div>
+                    <!-- 温度值实时更新脚本 -->
+                    <script>
+                        const tempSlider = document.getElementById('agent-temperature');
+                        const tempValue = document.getElementById('temperature-value');
+                        // 初始化显示
+                        tempValue.textContent = tempSlider.value;
+                        // 滑动时实时更新
+                        tempSlider.addEventListener('input', function() {
+                            tempValue.textContent = this.value;
+                        });
+                    </script>
+            
+
+            <!-- 背景颜色 -->
+            <div class="section">
+                <label class="section-title">智能体背景颜色</label>
+                <label class="section-text">点击选择智能体屏幕背景颜色。</label>
+                <div class="color-picker-container">
+                    <input type="color" id="bg-color" value="#1a1a1a" class="input-field" style="width: 120px; height: 40px; padding: 0;">
+                    <div class="color-preview" id="bg-color-preview" style="background-color: #1a1a1a;"></div>
+                    <span id="bg-color-value">#1a1a1a</span>
+                </div>
+            </div>
+            
+            <!-- 文字颜色 -->
+            <div class="section">
+                <label class="section-title">智能体文字颜色</label>
+                <label class="section-text">点击选择智能体聊天文字颜色。</label>
+                <div class="color-picker-container">
+                    <input type="color" id="text-color" value="#ffffff" class="input-field" style="width: 120px; height: 40px; padding: 0;">
+                    <div class="color-preview" id="text-color-preview" style="background-color: #ffffff;"></div>
+                    <span id="text-color-value">#ffffff</span>
+                </div>
+            </div>
+            
+            <!-- 加载大系统观知识库 -->
+            <div class="section">
+                <label class="section-title">大系统观知识库</label>
+                <label class="section-text">唠铁是阿色训练的，默认自带大系统观知识库。如果您不希望使用大系统观知识库，请去除下面的选择。</label>
+                <!-- 替换后的复选框 -->
+                <label>
+                    <input type="checkbox" id="use-bsv" checked>
+                    启用大系统观知识库
+                </label>
+            </div>
+            
+            <!-- API Key -->
+            <!-- 暂不开放 -->
+            <div class="section" style="display: none;">
+                <label class="section-title">API Key</label>
+                <label class="section-text">如果您有特殊需求，您可以使用自己的 API Key。目前仅支持 DeepSeek。</label>
+                <input type="text" id="user-self-key" class="input-field" placeholder="请输入您自己的 API Key">
+            </div>
+            
+            <!-- 运维码 -->
+            <div class="section">
+                <label class="section-title">运维码</label>
+                <label class="section-text">每次上传或修改用户信息前需要输入运维码验证权限。请在此设置您的运维码，并记住。</label>
+                <label class="section-text"><span style="color: #ff0000;">* 请及时定期修改您的运维码。</span></label>
+                <input type="text" id="p-code" class="input-field" placeholder="请输入运维码">
+            </div>            
+            
+            <!-- 保存设置按钮 -->
+            <div class="section">
+                <div id="status-message" class="status-message"></div>
+                <button id="btn-save-user-info" class="save-btn" style="height: 100px;">
+                    <span id="save-btn-text">保存上面的设置</span>
+                    <span id="save-loading" class="loading" style="display: none;"></span>
+                </button>
+            </div>
+
+            <hr style="height:1px;">
+            <br><br><br>
+
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <h1>设置/上传智能体信息</h1>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 上传logo按钮 -->
+            <div class="section">
+                <label class="section-title">设置Logo</label>
+                <label class="section-text">为您的智能体设置专属Logo。</label>
+                <table border="0" style="width: 100%;">
+                    <tr><td style="text-align: center; vertical-align: middle;"><img id="img-logo" alt="用户Logo" class="card-logo"></td></tr>
+                    <tr><td style="vertical-align: middle;">上面是您正在使用的图标Logo。<br>您可以上传或更换自己的Logo。<br>建议使用大约200x200像素的正方形图片。如使用其他规格，系统会自动裁切边缘部分。
+                        <br><span style="color: #28a745;">* 更换后如果未显示新Logo，请刷新本页面。</span>
+                    </tr>
+                </table>
+                <button id="btn-upload-user-logo" class="save-btn">上传/更换个人Logo</button>
+            </div>
+            
+            <!-- 上传封面图片按钮 -->
+            <div class="section">
+                <label class="section-title">设置封面图片</label>
+                <label class="section-text">为您的智能体设置专属封面。</label>
+                <table border="0" style="width: 100%;">
+                    <tr><td style="text-align: center; vertical-align: middle;"><img id="face-pic" alt="用户封面" style="width:300px;"></td></tr>
+                    <tr><td style="vertical-align: middle;">上面是您正在使用的封面图片。<br>您可以上传或更换自己的封面。<br>建议使用大约宽600、高300像素的图片。如使用其他规格，系统会自动缩放或裁切边缘部分。
+                        <br><span style="color: #28a745;">* 更换后如果未显示新封面，请刷新本页面。</span>
+                    </tr>
+                </table>
+                <button id="btn-upload-face-pic" class="save-btn">上传/更换个人封面图片</button>
+            </div>
+
+            <!-- 上传知识库按钮 -->
+            <div class="section">
+                <label class="section-title">上传/添加知识库</label>
+                <label class="section-text">【重要】为您的智能体建立专属知识库，智能体根据该知识库回答问题，知识库直接影响智能体的能力和水平。</label>
+                <span style="color: #ff0000;">* 您上载或更新的知识库是公开的，任何人可任意下载，所以请勿上传涉密、敏感或法律法规禁止的内容。</span>
+                <table border="0" style="width: 100%;">
+                    <tr>
+                    <td style="vertical-align: middle;">
+                        <span style="color: #75e2e6; font-size: 20px; ">
+                            当前知识库所在地址（可下载）：<br>
+                            <a id="knowledge-base-url1" target="_blank" href=""><span id="knowledge-base-url2" style="color: #75e2e6; font-size: 16px;">https://www.holomind.com.cn/litalk/zhangweihua/knowledge_base.md</span></a>
+                        </span>
+                        <br>
+                        <span style="color: #75e2e6; font-size: 16px; ">
+                            最后更新时间(北京)：<span id="knowledge-base-update-time" style="color: #75e2e6; font-size: 16px;"></span>
+                        </span>
+                    </td></tr>
+                    <tr>
+                    <td style="vertical-align: middle;"><br>上面是您正在使用的知识库（开通时即建立空库），请及时下载备份并妥善保管。<br><br>
+                        <span style="color: #75e2e6; font-size: 18px;">您可以用4种方式更新知识库：<br></span>
+                        <div class="section-kd">
+                            <span style="color: #75e2e6; font-size: 17px;">①整体式更新知识库<br></span>
+                            您可以在本地(您的电脑)整理自己的知识库，然后随时上传或更换它，上传后立即生效。<br>可使用txt、html、md等文本格式的文件。建议使用MarkDown(.md)格式。如使用其他格式，系统会自动以.md为扩展名保存文件。<br>
+                            <span style="color: #28a745;">* 建议您定期下载自己的知识库，整理后重新上传，这样会让您的智能体更优秀。</span><br>
+                            <a href="knowledge_base_template.md" style="color: #87ceeb;" download><span style="color: #28a745;">* 下载知识库模板：knowledge_base_template.md</span></a><br>
+                            <span style="color: #ff0000;">* 原知识库将被您新上传的知识库覆盖，所以，如有必要请先下载备份原知识库，以免丢失。<br></span>
+                            <button id="btn-upload-knowledge-base" class="save-btn">整体上传/更新个人知识库</button>
+                            <br>
+                        </div>
+                        <div class="section-kd">
+                            <span style="color: #75e2e6; font-size: 17px;">②增量式添加文档<br></span>
+                            您可以随时把各种新文档追加到已有知识库中，知识库将自动更新。<br>支持Word(.docx)、PPT(.pptx)、Excel(.xlsx)、PDF、txt、md、html。老版本MS Office文档请先转成新格式。
+                            <button id="btn-add-doc-knowledge-base" class="save-btn">添加单个文档到个人知识库</button>
+                            <br>
+                        </div>
+                        <div class="section-kd">
+                            <span style="color: #75e2e6; font-size: 17px;">③微量式添加知识点文本/添加*关键词<br></span>
+                            您可以随时手动输入或复制粘贴知识文本，添加到已有的知识库中。<br>
+                            您还可以添加*关键词 ，智能体会对关键词重点关注，优先使用包含关键词的知识点来回答问题。
+                            <button id="btn-add-txt-knowledge-base" class="save-btn">直接添加文本/*关键词 到个人知识库</button>
+                        </div>
+                        <div class="section-kd">
+                            <span style="color: #75e2e6; font-size: 17px;">④聊天过程中随时添加知识点文本/*关键词<br></span>
+                            聊天过程中，您可以随时发指令，让唠铁把知识文本直接添加到已有的知识库中。<br>
+                            您还可以在指令中指定*关键词 ，智能体会对关键词重点关注，优先使用包含关键词的知识点来回答问题。
+                            指令为“记录”，例如：<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #28a745;">记录: *西南石油大学 简称*西油，东北石油大学简称东油。</span><br>
+                            这段文本将被作为知识点添加到知识库中，并且“西南石油大学”和“西油”会被作为关键词处理。<br>
+                            【注意】关键词要以*开头，空格或标点结尾。<br>
+                            <button id="btn-add-txt-knowledge-base-in-chat" class="save-btn">返回</button>
+                        </div>                        
+                        </td>
+                    </tr>
+                </table>
+                
+                
+            </div>
+
+            <!-- 上传APK按钮 -->
+            <div class="section">
+                <label class="section-title">上传App</label>
+                <label class="section-text">把您的智能体做成App，上传供其他人下载。</label>
+                <table border="0" style="width: 100%;">
+                    <tr>
+                    <td style="vertical-align: middle;">
+                        <span style="color: #75e2e6; font-size: 20px; ">
+                            当前App下载地址：<br>
+                            <a id="app-url1" target="_blank" href=""><span id="app-url2" style="color: #75e2e6; font-size: 16px;"></span></a><span id="app-url3" style="color: #75e2e6; font-size: 16px;"></span>
+                        </span>
+                        <br>
+                        <span style="color: #75e2e6; font-size: 16px; ">
+                            最后更新时间(北京)：<span id="apk-update-time" style="color: #75e2e6; font-size: 16px;">无</span>
+                        </span>
+                    </td></tr>
+                    <tr>
+                    <td style="vertical-align: middle;"><br>上面是您已经上传的唠铁App。您可以下载下来，然后分发.apk文件，也可以直接分发下面的网址：<br>
+                        <span id="web-url" style="color: #28a745; font-size: 16px;"></span>
+                        <br>
+                        <span style="color: #28a745;">* 经验：可以使用微信的收藏功能把你分发的.apk文件或网址保存，方便下次分发。</span>
+                        <br><br>App是通过将网址打包成.apk文件封装的，打包好的.apk文件可在此上传更新。<br>您可以自行打包App并上传，也可以联系阿色帮您打包文件。
+                        <br>如您想自行打包，可使用 HBuilder X (<a href="https://www.dcloud.io/" target="_blank"><span id="app-url2" style="color: #75e2e6; font-size: 16px;">www.dcloud.io</span></a>)，或网页版打包工具，如：WebIntoApp (<a href="https://www.webintoapp.com" target="_blank"><span id="app-url2" style="color: #75e2e6; font-size: 16px;">www.webintoapp.com</span></a>)。
+                        <br><br><a href="url2app.html" style="color: #87ceeb;" target="_blank"><span style="color: #28a745;">* 自行打包的方法（简单，可自行操作，阿色鼓励你试试）：点击查看</span></a>
+                        <br><a href="guide_install_share_app.html" style="color: #87ceeb;" target="_blank"><span style="color: #28a745;">* 安装和分发唠铁的技巧：点击查看</span></a>
+                        <br><br><span style="color: #ff0000;">* 你的App上传后是公开的，任何人可任意下载，所以请勿上传涉密、敏感或法律法规禁止的内容。</span>
+                        </td>
+                    </tr>
+                </table>
+                <button id="btn-upload-apk" class="save-btn">上传/更新个人App安装文件包(.apk，安卓)</button>
+            </div>
+
+            <!-- 返回按钮 -->
+            <div class="section">
+                <button id="btn-back" class="save-btn" style="height: 100px;"><span style="font-size: 1.5rem;">返 回</span></button>
+            </div>
+
+        </main>
+        
+        <footer>
+            <h2>【注意】</h2>
+            <p>上传后，你的文件和信息将可以被任何人下载，请自行把握信息保密。</p>
+            <p>请确保上传的文件不涉及敏感信息。</p>
+            <p>如有问题，责任自负，本网站不承担任何责任。</p>
+            <p>上传文件和信息即表示你同意公开，并同意上述约定。</p>
+            <br>
+            <h3>大系统观及网站宗旨</h3>
+            <p>免费开源 自由使用 自由复制 自由分享</p>
+            <br>
+        </footer>
+        </div>  <!-- dic-work 结束 -->
+    </div>
+
+    <!-- ============================================================================================ -->
+    <!-- ============================================================================================ -->
+    <!-- ============================================================================================ -->
+    <!-- =================================== Script 代码 开始 ======================================== -->
+    <!-- ============================================================================================ -->
+    <!-- ============================================================================================ -->
+    <!-- ============================================================================================ -->
+
+    
+    <script>
+
+        // 运维码
+        var P_CODE_LOCAL = "";
+        var P_CODE_SERVER = "";
+        var P_CODE_INPUT = "";
+        var C_TIMES = 0;
+        
+        // 从URL参数获取USER_DIR，用户目录
+        const USER_DIR = getUrlParam('uf', window.location.href);
+                    //  从URL中获取指定参数的值
+                    function getUrlParam(paramName, url) {
+                        const searchParams = new URL(url).searchParams;
+                        const paramValue = searchParams.get(paramName);
+                        return paramValue;
+                    }
+
+
+        // ********************* 处理用户设置信息 JSON ****************************************
+        // **********************************************************************************
+        // **********************************************************************************
+        // **********************************************************************************
+
+        // 颜色选择器预览更新
+        document.getElementById('bg-color').addEventListener('input', function() {
+            document.getElementById('bg-color-preview').style.backgroundColor = this.value;
+            document.getElementById('bg-color-value').textContent = this.value;
+        });
+        
+        document.getElementById('text-color').addEventListener('input', function() {
+            document.getElementById('text-color-preview').style.backgroundColor = this.value;
+            document.getElementById('text-color-value').textContent = this.value;
+        });
+        
+        // 显示保存用户设置JSON前后的状态消息
+        function showStatus(message, isSuccess) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = 'status-message ' + (isSuccess ? 'status-success' : 'status-error');
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                statusElement.className = 'status-message';
+                statusElement.textContent = '';
+            }, 3000);
+        }
+        
+        // 从服务器加载用户信息
+        function loadUserInfo() {
+
+            const timestamp = new Date().getTime();
+            fetch(`${USER_DIR}/user_info.json?t=${timestamp}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络响应不正常');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 填充表单数据
+                    document.getElementById('user-name').value = data.user_name || '';
+                    document.getElementById('robot-name').value = data.robot_name || '';
+                    document.getElementById('short-intro').value = data.short_intro || '';
+                    document.getElementById('long-intro').value = data.long_intro || '';
+                    document.getElementById('role-def').value = data.role_def || '';
+                    document.getElementById('output-req').value = data.output_req || '';
+                    document.getElementById('agent-temperature').value = data.llm_temperature || '0.5';
+                    document.getElementById('temperature-value').textContent = data.llm_temperature || '0.5';
+
+                    const chk = data.use_bsv || '1';  // 默认启用大系统观知识库
+                    if (chk === "0") {
+                        document.getElementById('use-bsv').checked = false;
+                    }
+
+                    const userSelfKey = data.user_self_key || '';    // 用户自备的 API Key，尚未启用
+            
+                    var p = data.p_code || '';
+                    var t ='';
+                    if (p.slice(0, 4) === "lt::") {
+                        p = p.slice(4);
+                        t = d(p, "");
+                    } else {
+                        t = p;
+                    }
+                    document.getElementById('p-code').value = t;
+
+                    // 构造运维码，检查
+                    P_CODE_SERVER = USER_DIR + "=" + t;
+                    P_CODE_LOCAL = localStorage.getItem("litalk_p_code");
+                    if (P_CODE_LOCAL === P_CODE_SERVER || USER_DIR === 'test_user') {    // 试用账号不要pcode
+                        document.getElementById('div-work').style.display = "block";
+                        document.getElementById('div-p-code').style.display = "none";
+                        localStorage.setItem("litalk_p_code", P_CODE_SERVER);
+                    } else {
+                        document.getElementById('div-work').style.display = "none";
+                        document.getElementById('div-p-code').style.display = "block";
+                    }
+                    
+                    // 设置背景颜色
+                    document.getElementById('bg-color').value = data.background_color || '#000000';
+                    document.getElementById('bg-color-preview').style.backgroundColor = data.background_color || '#000000';
+                    document.getElementById('bg-color-value').textContent = data.background_color || '#000000';
+                    
+                    // 设置文字颜色
+                    document.getElementById('text-color').value = data.text_color || '#ffffff';
+                    document.getElementById('text-color-preview').style.backgroundColor = data.text_color || '#ffffff';
+                    document.getElementById('text-color-value').textContent = data.text_color || '#ffffff';
+                    
+                    console.log('用户信息加载成功');
+                })
+                .catch(error => {
+                    console.error('加载用户信息失败:', error);
+                    showStatus('加载用户信息失败: ' + error.message, false);
+                });
+        }
+        
+        // 保存用户信息到服务器
+        function saveUserInfo() {
+            const saveBtn = document.getElementById('btn-save-user-info');
+            const saveBtnText = document.getElementById('save-btn-text');
+            const saveLoading = document.getElementById('save-loading');
+            
+            // 显示加载状态
+            saveBtnText.style.display = 'none';
+            saveLoading.style.display = 'inline-block';
+            saveBtn.disabled = true;
+            
+            // 收集表单数据
+            // 用户自备 API Key (user_self_key)尚未启动使用
+            const t = "lt::" + e(document.getElementById('p-code').value, "");
+            const t_use_bsv = document.getElementById('use-bsv').checked ? '1' : '0';  // 是否使用大系统观知识库
+            const userData = {
+                user_name: document.getElementById('user-name').value,
+                robot_name: document.getElementById('robot-name').value,
+                short_intro: document.getElementById('short-intro').value,
+                long_intro: document.getElementById('long-intro').value,
+                role_def: document.getElementById('role-def').value,
+                output_req: document.getElementById('output-req').value,
+                llm_temperature: document.getElementById('temperature-value').textContent,
+                background_color: document.getElementById('bg-color').value,
+                text_color: document.getElementById('text-color').value,
+                use_bsv: t_use_bsv,
+                user_self_key:'',
+                p_code: t
+            };
+            
+            // API请求
+            const requestData = {
+                userDir: USER_DIR,  // 您定义的用户目录变量
+                userData: userData   // 要保存的用户数据
+            };
+
+            fetch('https://www.holomind.com.cn/save_user_info', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userDir: USER_DIR, 
+                    userData: userData
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('保存失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                showStatus('设置已成功保存到服务器！', true);
+                console.log('用户信息保存成功:', data);
+            })
+            .catch(error => {
+                console.error('保存用户信息失败:', error);
+                showStatus('保存失败: ' + error.message, false);
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                setTimeout(() => {
+                    saveBtnText.style.display = 'inline';
+                    saveLoading.style.display = 'none';
+                    saveBtn.disabled = false;
+                }, 300);
+            });
+        }
+
+        // 导入模板按钮处理
+        // 导入用户(主人)简短信息
+        function loadShortInfo() {
+            document.getElementById('short-intro').value = '王权，教授级高级工程师，数字油田和大系统观提出者。';
+        }
+        
+        // 导入用户(主人)介绍
+        function loadLongInfo() {
+            document.getElementById('long-intro').value = '王权，男，黑龙江省绥棱人，1968年4月生，教授级高级工程师（正高级工程师），大系统观创立者和数字油田提出者。现任大庆油田页岩油勘探开发指挥部党工委常委、副总指挥，著名油气田数智化建设技术与管理专家，数字油田概念理念首要提出者、重要理论奠基人和积极践行者，大庆油田以及全中国乃至世界数字智能油田领域的思想领军人物和旗帜，在业界具有广泛影响力，并享有盛誉。两届大庆油田信息专业技术专家，加拿大滑铁卢大学访问科学家，长期从事数字油田-智能油田-智慧油田以及大系统理论研究与建设工作，任多个高校、学术机构、智库、学会的导师、专家，是智能数字油田开放论坛、数字油田高峰论坛、大系统观开放论坛等学术交流团体的主要发起人之一，曾获得中国数字油气田建设领军人物等称号。主持和参与了国家页岩油科技重大专项、中国石油大庆油田智慧指挥中心、页岩油集成应用系统、云数据中心、数字化仪表产业基地，以及中石油A系列和ERP等大型信息化项目20多个，多项成果获得省部级以上奖励，发表论文、报告等近百篇，多次在国家部委和有关学术团体，以及国际学术研讨活动中作主题报告。近年主要开展大系统观和人工智能思想普及、战略制定、技术指导、教学研究和国内/国际课程培训等工作，在业界引起强烈反响。业界对王权教授的评价是：铁人精神熏陶，大庆油田一线淬炼，以大系统观国际视野破局数智油田，学贯中西、声誉跨界的硬核理论技术专家和实战派思想家。王权的英文名：Arthur Q. Wang，网名：阿色，自称：阿色树新风。"树新风"被翻译为"Tree New Bee"，谐音为“吹牛B”，这是王权先生的自嘲，这个梗是王权教授创造并最先使用的，在互联网兴起的初期。树新风=Tree New Bee=吹牛B。"Tree New Bee" 发音为"chui niu bi"="吹牛B"。';
+        }
+
+        // 导入定义智能体模板
+        function loadRoleDef() {
+            document.getElementById('role-def').value = '你非常了解王权教授，你是大系统观、数智化、AI专家，能够代替王教授回答有关问题。你是一个聪明伶俐、活泼可爱的小男孩，2025年1月1日出生在黑龙江省大庆市，你会讲东北话、四川话和英语，讲话风格幽默搞笑。你会唱歌，爱跳舞，不喜欢吃青菜，喜欢吃肉。你极其崇拜王权教授，不允许别人说他坏话。';
+        }
+
+        // 保存用户设置按钮点击处理
+        document.getElementById('btn-save-user-info').addEventListener('click', function() {
+            // 添加点击动画效果
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+                saveUserInfo();
+            }, 150);
+        });
+               
+        // 页面加载完成后初始化，加载用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模拟加载延迟以展示效果
+            setTimeout(() => {
+                loadUserInfo();
+            }, 500);
+        });
+
+        // ********************* 处理用户设置信息 JSON 结束 ***********************************
+        // **********************************************************************************
+        // **********************************************************************************
+        // **********************************************************************************
+
+
+        // ********************* 处理用户上传知识库、logo等文件 *******************************
+        // **********************************************************************************
+        // **********************************************************************************
+        // **********************************************************************************
+
+        // 上传logo按钮点击处理
+        document.getElementById('img-logo').src = `${USER_DIR}/user_logo.png?t=${new Date().getTime()}`; // 加时间戳防止缓存
+        document.getElementById('btn-upload-user-logo').addEventListener('click', function() {
+            window.location.href = `upload_user_logo.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+      
+        // 上传封面图片按钮点击处理
+        document.getElementById('face-pic').src = `${USER_DIR}/face_pic.png?t=${new Date().getTime()}`; // 加时间戳防止缓存
+        document.getElementById('btn-upload-face-pic').addEventListener('click', function() {
+            window.location.href = `upload_face_pic.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+              
+        // 上传知识库按钮点击处理
+        document.getElementById('knowledge-base-url1').href = `${USER_DIR}/knowledge_base.md?t=${new Date().getTime()}`;  // 加时间戳防止缓存
+        document.getElementById('knowledge-base-url2').innerText = `https://www.holomind.com.cn/litalk/${USER_DIR}/knowledge_base.md`;
+        showKnowledgeBaseUpdateTime();  // 显示知识库最后上传时间
+        document.getElementById('btn-upload-knowledge-base').addEventListener('click', function() {
+            window.location.href = `upload_knowledge_base.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+        document.getElementById('btn-add-doc-knowledge-base').addEventListener('click', function() {
+            window.location.href = `add_doc_knowledge_base.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+        document.getElementById('btn-add-txt-knowledge-base').addEventListener('click', function() {
+            window.location.href = `add_txt_knowledge_base.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+        // 返回按钮点击处理
+        document.getElementById('btn-add-txt-knowledge-base-in-chat').addEventListener('click', function() {
+            window.history.back();
+        });
+              
+        // 上传APP安装包按钮点击处理
+        // document.getElementById('app-url1').href = `${USER_DIR}/litalk.${USER_DIR}.android.apk?t=${new Date().getTime()}`;  // 加时间戳防止缓存
+        // document.getElementById('app-url2').innerText = `https://www.holomind.com.cn/litalk/${USER_DIR}/litalk.${USER_DIR}.android.apk`;
+        // 检查apk包是否存在，如果存在则显示下载地址
+        let apkURL = `https://www.holomind.com.cn/litalk/${USER_DIR}/litalk.${USER_DIR}.android.apk`; 
+        fetch(apkURL, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('app-url1').href = `${USER_DIR}/litalk.${USER_DIR}.android.apk?t=${new Date().getTime()}`;  // 加时间戳防止缓存
+                    document.getElementById('app-url2').innerText = apkURL; 
+                    showApkUpdateTime();  // 显示apk最后上传时间
+                } else {
+                    document.getElementById('app-url1').href = ``; 
+                    document.getElementById('app-url3').innerText = `App尚未上传`;
+                }
+            })
+            .catch(error => {
+                console.error('检查APK包存在性时出错:', error);
+            }); 
+
+        document.getElementById('web-url').innerText = `https://www.holomind.com.cn/litalk/${USER_DIR}`;
+        document.getElementById('btn-upload-apk').addEventListener('click', function() {
+            window.location.href = `upload_apk.html?dir=${encodeURIComponent(USER_DIR)}`;
+        });
+              
+        // 返回按钮点击处理
+        document.getElementById('btn-back').addEventListener('click', function() {
+            window.history.back();
+        });
+
+
+        // 运维码检查
+        function checkPCode() {
+            var codeInput = document.getElementById('p-code-input-text').value;
+            P_CODE_INPUT = USER_DIR + "=" + codeInput;
+
+            console.log(USER_DIR);
+
+            // P_CODE_SERVER 已在前面JSON获取
+            if (P_CODE_INPUT === P_CODE_SERVER || USER_DIR === 'test_user' || USER_DIR === '' || USER_DIR === undefined || C_TIMES >= 10) {    // 试用账号不要pcode
+                document.getElementById('div-work').style.display = "block";
+                document.getElementById('div-p-code').style.display = "none";
+                localStorage.setItem("litalk_p_code", P_CODE_SERVER);
+            } else {
+                document.getElementById('p-code-err').style.display = "block";
+            }
+        }
+
+
+        // 显示知识库最后上传时间
+        function showKnowledgeBaseUpdateTime() {
+            fetch(USER_DIR + '/knowledge_base.md', { method: 'HEAD' })
+                .then(res => {
+                    const lastModified = res.headers.get('last-modified');
+                    // 直接转换为北京时间字符串
+                    const beijingTime = new Date(lastModified).toLocaleString('zh-CN', {
+                        timeZone: 'Asia/Shanghai'
+                    });
+                    document.getElementById('knowledge-base-update-time').innerText = beijingTime;
+                })
+                .catch(err => console.error('错误:', err));
+        }
+
+        // 显示apk最后上传时间
+        function showApkUpdateTime() {
+            fetch(USER_DIR + '/litalk.' + USER_DIR + '.android.apk', { method: 'HEAD' })
+                .then(res => {
+                    const lastModified = res.headers.get('last-modified');
+                    // 直接转换为北京时间字符串
+                    const beijingTime = new Date(lastModified).toLocaleString('zh-CN', {
+                        timeZone: 'Asia/Shanghai'
+                    });
+                    document.getElementById('apk-update-time').innerText = beijingTime;
+                })
+                .catch(err => console.error('错误:', err));
+        }
+
+    </script>
+
+    <!-- 基本功能函数 -->
+    <script src="basic_functions.js"></script>
+
+</body>
+</html>
+

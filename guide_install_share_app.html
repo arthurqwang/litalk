@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 
+  最后更新日期：2026.3.11
+ -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>安装和分发唠铁的技巧</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      line-height: 1.8;
+      color: #333;
+      background: #f9fafb;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 10px; }
+    header p { opacity: 0.95; font-size: 1rem; }
+    .notice {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 18px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+    section {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    h2 {
+      color: #5a67d8;
+      font-size: 1.4rem;
+      margin: 0 0 18px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eef2f7;
+    }
+    h3 {
+      color: #4a5568;
+      font-size: 1.15rem;
+      margin: 22px 0 12px 0;
+    }
+    ol, ul { padding-left: 24px; margin: 12px 0; }
+    li { margin: 8px 0; }
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 0.9rem;
+      margin: 15px 0;
+      border-left: 4px solid #667eea;
+    }
+    .code-block code { white-space: pre-wrap; word-break: break-all; }
+    .note {
+      background: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 12px 18px;
+      margin: 15px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: #2c5282;
+    }
+    .highlight {
+      background: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .step-list { counter-reset: step; list-style: none; padding-left: 0; }
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 36px;
+      margin: 14px 0;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 0;
+      width: 24px; height: 24px;
+      background: #667eea;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    a { color: #667eea; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #718096;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      body { padding: 15px; }
+      header { padding: 25px 20px; }
+      section { padding: 20px; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>安装和分发唠铁的技巧</h1>
+    <p>面向普通人的实用教程</p>
+  </header>
+
+  <div class="notice">
+    <strong>提示：</strong>下述步骤适用于安卓设备，苹果手机用户请直接使用网址访问。
+  </div>
+
+  <section>
+    <ol class="step-list">
+      <li>
+        <h3>【第一步：制作 App】</h3>
+        <p>进入你的唠铁，点击【<span class="highlight">设置</span>】，按指导生成并上传你的 App 到唠铁服务器。如果阿色为你生成了 App，他将帮你上传，你可以跳过此步。</p>
+      </li>
+
+      <li>
+        <h3>【第二步：获得 App 安装包】</h3>
+        <ul>
+          <li>进入你的唠铁，点击【<span class="highlight">分享</span>】，点击二维码，将下载你的 App 到你自己的手机上；别人扫描二维码则下载到他的手机上。</li>
+          <li>如果你是在微信中下载唠铁，它会提醒你复制链接，然后在浏览器里打开链接。</li>
+          <li>如果是阿色为你生成了 App，他会把安装包用微信发给你，你点击安装包，然后先【<span class="highlight">保存</span>】，再【<span class="highlight">收藏</span>】以便你再发给别人。</li>
+        </ul>
+      </li>
+
+      <li>
+        <h3>【第三步：安装到手机】</h3>
+        <p>到你的手机文件管理中，找到安装包，名称为【<span class="highlight">litalk.你的名字.android.apk</span>】，点击它就开始安装。安装过程中，需要授予权限。因为是我们自行分发，所以手机默认是禁止安装，点击允许、继续安装即可，也可能提示需要特别授权，同意即可。</p>
+        <div class="note">
+          <strong>注：</strong>若安装被拦截，请在手机设置中临时开启"允许安装未知来源应用"权限。<br>如果使用中有问题，可尝试清除原app的数据，或删除旧的app重新安装。
+        </div>
+      </li>
+
+      <li>
+        <h3>【第四步：分发】</h3>
+        <ul>
+          <li><strong>安卓用户</strong>：可发给他 App 安装包：打开【微信 - 我 - 收藏】，找到 App，【发送给朋友】。或者在手机或电脑里找到.apk文件，发出即可。</li>
+          <li><strong>苹果用户</strong>：则发给他网址（阿色会给你，以阿色给你的为准），一般如下：
+            <div class="code-block"><code>https://www.holomind.com.cn/litalk/你的名字拼音</code></div>
+          </li>
+        </ul>
+        <p>网址也可用微信收藏起来，便于转发。</p>
+      </li>
+
+      <li>
+        <h3>【第五步：接收方操作】</h3>
+        <p>接收方从【<span class="highlight">第二步</span>】开始安装即可。</p>
+      </li>
+    </ol>
+
+    <div class="note">
+      <strong>温馨提示：</strong>如需要帮助，可联系阿色，但阿色鼓励你自己先试试，挺有意思的。
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 唠铁 LiTalk · 阿色教授 提供技术支持</p>
+  </footer>
+
+</body>
+</html>

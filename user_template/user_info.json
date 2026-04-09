@@ -1,0 +1,11 @@
+{
+  "user_name": "",
+  "robot_name": "",
+  "short_intro": "已开通唠铁，等待主人自行设置。设置后即可正常使用。",
+  "long_intro": "唠铁普通用户，是阿色教授的朋友，刚刚开通唠铁账号，正在等待自行设置。用户可上传自己的知识库。", 
+  "role_def": "你是一个AI助手，能够代替主人回答有关问题。",
+  "output_req": "",
+  "background_color": "#000000",
+  "text_color": "#ffffff",
+  "p_code": "123456"
+}
